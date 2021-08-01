@@ -164,7 +164,7 @@ client.on('message', message => {
 		if(!userFound){
 			//this user object should be changed in the event that a new addition is made to the bot
 			//simply tacking it on to the end should be fine
-			let newUser = {'id':hitUser,'name':hitUserName,'hits':1,'total':[{'date':formattedDate,'hits':1}]};
+			let newUser = {'id':hitUser,'name':hitUserName,'hits':1,'total':[]};
 			//update user file
 			dataJSON.users.push(newUser);
 			//write it all to the database
