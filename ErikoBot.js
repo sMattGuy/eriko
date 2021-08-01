@@ -8,8 +8,7 @@ const client = new Discord.Client();
 const credentials = require('./auth.json');
 
 //external variable that determins if the database has been reset today
-let dailyReset = false;
-
+let dayHasPassed = false;
 //sets ready presense
 client.on('ready', () => {
   client.user.setPresence({
@@ -37,14 +36,20 @@ client.on('message', message => {
    });
 	//checks for new day of clan battles
 	let currentTime = new Date();	// this will update every time there is a message emitted, essentially working as a time of message
-	if(currentTime.getUTCHours() != 13){
+	if(currentTime.getUTCHours() >= 13){
 		//if the current time does not equal 13 UTC (9am EST) then it will reset the daily reset checker to false
 		//this is to prevent the issue where if a person was triggering the bot during 13 UTC it would be constantly resetting
 		//the database, therefore clearing out an entire hours worth of work
-		dailyReset = false;
+		dayHasPassed = true;
+	}
+	if(currentTime.getUTCHours() < 13){
+		//if the current time does not equal 13 UTC (9am EST) then it will reset the daily reset checker to false
+		//this is to prevent the issue where if a person was triggering the bot during 13 UTC it would be constantly resetting
+		//the database, therefore clearing out an entire hours worth of work
+		dayHasPassed = false;
 	}
 	//triggers at 9AM EST or 13 UTC
-	if(currentTime.getUTCHours() == 13 && !dailyReset){
+	if(currentTime.getUTCHours() > 13 && dayHasPassed){
 		if(!fs.existsSync(`./database.json`)){
 			//if there is no database file, do nothing
 			console.log('No database file found');
@@ -52,7 +57,7 @@ client.on('message', message => {
 		else{
 			//this sets the daily reset flag to true, meaning that the daily reset has already occured, see above comment for
 			//more information on why this is done
-			dailyReset = true;
+			dayHasPassed = false;
 			//database read in local directory and parseing it into JSON object
 			let dataRead = fs.readFileSync(`./database.json`);
 			let dataJSON = JSON.parse(dataRead);
