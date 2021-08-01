@@ -36,13 +36,13 @@ client.on('message', message => {
    });
 	//checks for new day of clan battles
 	let currentTime = new Date();	// this will update every time there is a message emitted, essentially working as a time of message
-	if(currentTime.getUTCHours() >= 13){
+	if(currentTime.getUTCHours() >= 13 && !dayHasPassed){
 		//if the current time does not equal 13 UTC (9am EST) then it will reset the daily reset checker to false
 		//this is to prevent the issue where if a person was triggering the bot during 13 UTC it would be constantly resetting
 		//the database, therefore clearing out an entire hours worth of work
 		dayHasPassed = true;
 	}
-	if(currentTime.getUTCHours() < 13){
+	if(currentTime.getUTCHours() < 13 && dayHasPassed){
 		//if the current time does not equal 13 UTC (9am EST) then it will reset the daily reset checker to false
 		//this is to prevent the issue where if a person was triggering the bot during 13 UTC it would be constantly resetting
 		//the database, therefore clearing out an entire hours worth of work
