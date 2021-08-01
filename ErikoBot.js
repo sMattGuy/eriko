@@ -95,7 +95,7 @@ client.on('message', message => {
 						let newDailyHits = {'date':formattedDate,'hits':1};
 						dataJSON.users[i].total.push(newDailyHits);
 					}
-					message.channel.send(`You have hit the boss! You have hit the boss ${dataJSON.users[i].hits} today`);
+					message.channel.send(`You have hit the boss ${dataJSON.users[i].hits} time(s) today`);
 					let dataSave = JSON.stringify(dataJSON);
 					fs.writeFileSync(`./database.json`,dataSave);
 				}
@@ -108,7 +108,7 @@ client.on('message', message => {
 			dataJSON.users.push(newUser);
 			let dataSave = JSON.stringify(dataJSON);
 			fs.writeFileSync(`./database.json`,dataSave);
-			message.channel.send(`You have hit the boss! You have hit the boss 1 today`);
+			message.channel.send(`You have hit the boss 1 time today`);
 		}
 	}
 	else if(message.content === '!eriko checkTodaysHits'){
@@ -131,7 +131,7 @@ client.on('message', message => {
 	else if(message.content.startsWith('!eriko checkHits')){
 		let chop = message.content.split(" ");
 		if(chop.length != 3){
-			message.channel.send(`Usage: !eriko checkHits MMDDYYYY (ie July 5 2021 UTC is 07052021)`);
+			message.channel.send(`Usage: !eriko checkHits MMDDYYYY (For example: July 5 2021 UTC is 07052021)`);
 		}
 		else{
 			let selectedDate = chop[chop.length-1];
@@ -165,10 +165,10 @@ client.on('message', message => {
 		let recordDay = ('0' + currentTime.getUTCDate()).slice(-2);
 		let formattedDate = "" + recordMonth + recordDay + currentTime.getUTCFullYear();
 		
-		message.channel.send(`Todays date is ${formattedDate}`);
+		message.channel.send(`Today's date is ${formattedDate}`);
 	}
 	else if(message.content === '!eriko help'){
-		message.channel.send(`Use !eriko hit  to account that you hit the boss for today!\nUse !eriko checkTodaysHits  to see everyones hits for today!\nUse !eriko today  to see what todays date format is for your convience\nUse !eriko checkHits <MMDDYYYY> to see the hits for a specific day, note though that the time is in UTC and the format is 07052021 for july 5th 2021`);
+		message.channel.send(`Use !eriko hit -> to count that you hit the boss for today!\nUse !eriko checkTodaysHits -> to see everyones hits for today!\nUse !eriko today -> to see what todays date is!\nUse !eriko checkHits <MMDDYYYY> -> to see the hits for a specific day! (Note though that the time is in UTC and the format is 07052021 for july 5th 2021)`);
 	}
 });
 // Log our bot in using the token from https://discord.com/developers/applications
