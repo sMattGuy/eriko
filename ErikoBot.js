@@ -49,7 +49,7 @@ client.on('message', message => {
 		dayHasPassed = false;
 	}
 	//triggers at 9AM EST or 13 UTC
-	if(currentTime.getUTCHours() > 13 && dayHasPassed){
+	if((currentTime.getUTCHours() > 13 && dayHasPassed) || message.content === 'eriko test daily call'){
 		if(!fs.existsSync(`./database.json`)){
 			//if there is no database file, do nothing
 			console.log('No database file found');
