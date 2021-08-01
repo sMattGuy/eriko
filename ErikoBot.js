@@ -58,6 +58,18 @@ client.on('message', message => {
 			let dataJSON = JSON.parse(dataRead);
 			//loop that iterates over all users and resets their daily hits to 0
 			for(let i=0;i<dataJSON.users.length;i++){
+				
+				//setting yesterdays hits
+				currentTime.setDate(currentTime.getDate() - 1);
+				//time variables that pad zeros and un-zero index the month
+				let recordMonth = ('0' + (currentTime.getUTCMonth()+1)).slice(-2);
+				let recordDay = ('0' + currentTime.getUTCDate()).slice(-2);
+				//the date formatted as MMDDYYYY
+				let formattedDate = "" + recordMonth + recordDay + currentTime.getUTCFullYear();
+				//create the input for the user
+				let newDailyHits = {'date':formattedDate,'hits':dataJSON.users[i].hits};
+				dataJSON.users[i].total.push(newDailyHits);
+				
 				//actual setting of each user to 0
 				dataJSON.users[i].hits = 0;
 			}
@@ -114,6 +126,9 @@ client.on('message', message => {
 					//increase the users daily hits
 					dataJSON.users[i].hits += 1;
 					//flag to search for todays hits, if its not found a new entry is made for today
+					
+					//commenting out to test if the newer system works
+					/*
 					let foundDate = false;
 					for(let j=0;j<dataJSON.users[i].total.length;j++){
 						//the date was found
@@ -135,6 +150,7 @@ client.on('message', message => {
 						let newDailyHits = {'date':formattedDate,'hits':1};
 						dataJSON.users[i].total.push(newDailyHits);
 					}
+					*/
 					//alerts user
 					message.channel.send(`You have hit the boss ${dataJSON.users[i].hits} time(s) today`);
 					//updates database file
