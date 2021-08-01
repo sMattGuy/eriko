@@ -63,7 +63,7 @@ client.on('message', message => {
 			let dataJSON = JSON.parse(dataRead);
 			//loop that iterates over all users and resets their daily hits to 0
 			for(let i=0;i<dataJSON.users.length;i++){
-				
+				console.log('updating hits for ' + dataJSON.users[i].name);
 				//setting yesterdays hits
 				currentTime.setDate(currentTime.getDate() - 1);
 				//time variables that pad zeros and un-zero index the month
@@ -71,8 +71,10 @@ client.on('message', message => {
 				let recordDay = ('0' + currentTime.getUTCDate()).slice(-2);
 				//the date formatted as MMDDYYYY
 				let formattedDate = "" + recordMonth + recordDay + currentTime.getUTCFullYear();
+				
+				let hits = dataJSON.users[i].hits
 				//create the input for the user
-				let newDailyHits = {'date':formattedDate,'hits':dataJSON.users[i].hits};
+				let newDailyHits = {'date':formattedDate,'hits':hits};
 				dataJSON.users[i].total.push(newDailyHits);
 				
 				//actual setting of each user to 0
@@ -109,6 +111,7 @@ client.on('message', message => {
 		let userFound = false;
 		//time recording for daily totals for user
 		//this works by essentially creating PrST (Pricon Standard Time) where 9AM EST (13 UTC) is converted to 0 PrST
+		/*
 		if(currentTime.getUTCHours() < 13){
 			//if the current time is between 0 UTC and 13 UTC, roll back 1 day
 			currentTime.setDate(currentTime.getDate() - 1);
@@ -118,6 +121,7 @@ client.on('message', message => {
 		let recordDay = ('0' + currentTime.getUTCDate()).slice(-2);
 		//the date formatted as MMDDYYYY
 		let formattedDate = "" + recordMonth + recordDay + currentTime.getUTCFullYear();
+		*/
 		for(let i=0;i<dataJSON.users.length;i++){
 			//if we find the users ID in the database, we update their personal stats
 			if(hitUser == dataJSON.users[i].id){
