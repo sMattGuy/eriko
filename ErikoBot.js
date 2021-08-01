@@ -36,14 +36,18 @@ client.on('message', message => {
    });
 	//checks for new day of clan battles
 	let currentTime = new Date();	// this will update every time there is a message emitted, essentially working as a time of message
+	if(message.content.startsWith('!eriko')){
+		console.log(currentTime.getHours() + ':' + currentTime.getMinutes() + ' ' + (currentTime.getMonth()+1) + '/' + currentTime.getDate() + '/' + currentTime.getFullYear());
+	}
 	if(currentTime.getUTCHours() < 13 && !dayHasPassed){
 		//if the current time does not equal 13 UTC (9am EST) then it will reset the daily reset checker to false
 		//this is to prevent the issue where if a person was triggering the bot during 13 UTC it would be constantly resetting
 		//the database, therefore clearing out an entire hours worth of work
+		console.log('setting day has passed to true in time check');
 		dayHasPassed = true;
 	}
 	//triggers at 9AM EST or 13 UTC
-	if((currentTime.getUTCHours() >= 13 && dayHasPassed) || message.content === 'eriko test daily call'){
+	if(currentTime.getUTCHours() >= 13 && dayHasPassed){
 		if(!fs.existsSync(`./database.json`)){
 			//if there is no database file, do nothing
 			console.log('No database file found');
@@ -51,6 +55,7 @@ client.on('message', message => {
 		else{
 			//this sets the daily reset flag to true, meaning that the daily reset has already occured, see above comment for
 			//more information on why this is done
+			console.log('setting day has passed to false in daily recording and reset')
 			dayHasPassed = false;
 			//database read in local directory and parseing it into JSON object
 			let dataRead = fs.readFileSync(`./database.json`);
@@ -65,8 +70,8 @@ client.on('message', message => {
 				let recordDay = ('0' + currentTime.getUTCDate()).slice(-2);
 				//the date formatted as MMDDYYYY
 				let formattedDate = "" + recordMonth + recordDay + currentTime.getUTCFullYear();
-				
 				let hits = dataJSON.users[i].hits
+				console.log('hits for ' + formattedDate + ' ' + hits);
 				//create the input for the user
 				let newDailyHits = {'date':formattedDate,'hits':hits};
 				dataJSON.users[i].total.push(newDailyHits);
@@ -85,7 +90,7 @@ client.on('message', message => {
 		//this command is used so that individual users can report that they have hit the boss
 		//NOTE this bot has no way of actually verifying that the boss was actually hit, so it works on an honor system
 		//possible update would be to somehow include a way of verifying interactions
-		
+		console.log(message.author.username + ' is hitting the boss');
 		//stores the user id and name
 		let hitUser = message.author.id;
 		let hitUserName = message.author.username;
@@ -123,6 +128,7 @@ client.on('message', message => {
 				userFound = true;
 				//check to see if the user has already done their 3 hits for today
 				if(dataJSON.users[i].hits == 3){
+					console.log(message.author.username + ' has hit 3 times day');
 					message.channel.send(`You have already hit 3 times today!`);
 				}
 				else{
@@ -179,6 +185,7 @@ client.on('message', message => {
 	}
 	else if(message.content === '!eriko checkTodaysHits'){
 		//display the all users hits for today
+		console.log(message.author.username + ' is checking todays hits');
 		if(!fs.existsSync(`./database.json`)){
 			//if the file doesnt exist, do nothing and report it to console
 			console.log('No database file found');
@@ -208,6 +215,7 @@ client.on('message', message => {
 		else{
 			//pull the final date part into a seperate variable
 			let selectedDate = chop[chop.length-1];
+			console.log(message.author.username + ' is checking hits for ' + selectedDate);
 			//check that the database exists
 			if(!fs.existsSync(`./database.json`)){
 				console.log('No database file found');
@@ -234,6 +242,7 @@ client.on('message', message => {
 	}
 	//simple command that just tells users what today is in PrST
 	else if(message.content === '!eriko today'){
+		console.log(message.author.username + ' is checking todays date');
 		//this uses the same time conversion as above, so check there for the explination on PrST
 		if(currentTime.getUTCHours() < 13){
 			currentTime.setDate(currentTime.getDate() - 1);
@@ -247,6 +256,7 @@ client.on('message', message => {
 	}
 	//help menu, any new commands should be added to this for users sake
 	else if(message.content === '!eriko help'){
+		console.log(message.author.username + ' is checking help');
 		message.channel.send(`Use !eriko hit -> to count that you hit the boss for today!\nUse !eriko checkTodaysHits -> to see everyones hits for today!\nUse !eriko today -> to see what todays date is!\nUse !eriko checkHits <MMDDYYYY> -> to see the hits for a specific day! (Note though that the time is in UTC and the format is 07052021 for july 5th 2021)`);
 	}
 });
