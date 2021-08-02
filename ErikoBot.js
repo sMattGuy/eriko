@@ -106,7 +106,7 @@ client.on('message', message => {
 		//read the database file and parse it into JSON object
 		let dataRead = fs.readFileSync(`./database.json`);
 		let dataJSON = JSON.parse(dataRead);
-		//flag that determins if a user exists within the database file, if this remains false then the user will be added at the end
+		//flag that determines if a user exists within the database file, if this remains false then the user will be added at the end
 		let userFound = false;
 		//time recording for daily totals for user
 		//this works by essentially creating PrST (Pricon Standard Time) where 9AM EST (13 UTC) is converted to 0 PrST
@@ -143,12 +143,12 @@ client.on('message', message => {
 						//the date was found
 						if(dataJSON.users[i].total[j].date == formattedDate){
 							//set our flag to true and update the hits for today
-							//alternativly this can be done in the daily update section above where we set the hits back to 0
+							//alternatively this can be done in the daily update section above where we set the hits back to 0
 							//the only issue with doing that is that if someone called for the hits today at the current date it would show
 							//up empty, despite people hitting today
 							//this issue is only present if you consider that !eriko checkTodaysHits and !eriko checkHits MMDDYYYY will
 							//always show the same information for the same day
-							//to summerize: we can remove this and change it to updating in the daily reset section
+							//to summarize: we can remove this and change it to updating in the daily reset section
 							foundDate = true;
 							dataJSON.users[i].total[j].hits += 1;
 							break;
@@ -195,12 +195,12 @@ client.on('message', message => {
 			let dataRead = fs.readFileSync(`./database.json`);
 			let dataJSON = JSON.parse(dataRead);
 			//initialize the message with something, discord js crashes if an empty message is sent
-			let messageToSend = `Todays hits\n`;
+			let messageToSend = `Today's hits\n`;
 			for(let i=0;i<dataJSON.users.length;i++){
 				//go through all users and display their name plus how many hits they've done today
 				messageToSend += `${dataJSON.users[i].name} : ${dataJSON.users[i].hits}\n`;
 			}
-			//send resulting message to chat, as a code block for monospace font
+			//send resulting message to chat, as a code block for mono space font
 			message.channel.send(messageToSend,{'code':true});
 		}
 	}
@@ -213,7 +213,7 @@ client.on('message', message => {
 			message.channel.send(`Usage: !eriko checkHits MMDDYYYY (For example: July 5 2021 UTC is 07052021)`);
 		}
 		else{
-			//pull the final date part into a seperate variable
+			//pull the final date part into a separate variable
 			let selectedDate = chop[chop.length-1];
 			console.log(message.author.username + ' is checking hits for ' + selectedDate);
 			//check that the database exists
@@ -257,7 +257,7 @@ client.on('message', message => {
 	//help menu, any new commands should be added to this for users sake
 	else if(message.content === '!eriko help'){
 		console.log(message.author.username + ' is checking help');
-		message.channel.send(`Use !eriko hit -> to count that you hit the boss for today!\nUse !eriko checkTodaysHits -> to see everyones hits for today!\nUse !eriko today -> to see what todays date is!\nUse !eriko checkHits <MMDDYYYY> -> to see the hits for a specific day! (Note though that the time is in UTC and the format is 07052021 for july 5th 2021)`);
+		message.channel.send(`Use !eriko hit -> to count that you hit the boss for today!\nUse !eriko checkTodaysHits -> to see everyone's hits for today!\nUse !eriko today -> to see what today's date is!\nUse !eriko checkHits <MMDDYYYY> -> to see the hits for a specific day! (Note though that the time is in UTC and the format is 07052021 for July 5th 2021)`);
 	}
 });
 // Log our bot in using the token from https://discord.com/developers/applications
