@@ -231,8 +231,8 @@ client.on('message', message => {
 						//if date is found using date code above, store it to the message
 						if(selectedDate == dataJSON.users[i].total[j].date){
 							messageToSend += `${dataJSON.users[i].name} : ${dataJSON.users[i].total[j].hits}\n`;
+							break;
 						}
-						break;
 					}
 				}
 				//send message as a code block
