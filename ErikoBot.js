@@ -56,7 +56,9 @@ client.on('message', message => {
 	
 	//triggers at 9AM EST or 13 UTC
 	if(currentTime.getUTCHours() >= 13 && dayHasPassed){
-		if(!fs.existsSync(`./database.json`)){
+		let configRead = fs.readFileSync(`./config.json`);
+		let configJSON = JSON.parse(configRead);
+		if(!fs.existsSync(`./${configJSON.startCB}database.json${configJSON.endCB}`)){
 			//if there is no database file, do nothing
 			console.log('No database file found');
 		}
@@ -66,7 +68,7 @@ client.on('message', message => {
 			console.log('setting day has passed to false in daily recording and reset')
 			dayHasPassed = false;
 			//database read in local directory and parsing it into JSON object
-			let dataRead = fs.readFileSync(`./database.json`);
+			let dataRead = fs.readFileSync(`./${configJSON.startCB}database${configJSON.endCB}.json`);
 			let dataJSON = JSON.parse(dataRead);
 			//loop that iterates over all users and resets their daily hits to 0
 			for(let i=0;i<dataJSON.users.length;i++){
@@ -89,7 +91,7 @@ client.on('message', message => {
 			}
 			//JSON compression and sync file write to database file, overwriting it
 			let dataSave = JSON.stringify(dataJSON);
-			fs.writeFileSync(`./database.json`,dataSave);
+			fs.writeFileSync(`./${configJSON.startCB}database${configJSON.endCB}.json`,dataSave);
 		}
 	}
 	
@@ -100,6 +102,8 @@ client.on('message', message => {
 		//possible update would be to somehow include a way of verifying interactions
 		let hitAmount = 1;
 		console.log(message.author.username + ' is hitting the boss');
+		let configRead = fs.readFileSync(`./config.json`);
+		let configJSON = JSON.parse(configRead);
 		let chop = message.content.split(" ");
 		//check if the length and size of the message is okay
 		if(chop.length > 3){
@@ -117,16 +121,16 @@ client.on('message', message => {
 		let hitUser = message.author.id;
 		let hitUserName = message.author.username;
 		//checks if database exists, if not it makes a new database file
-		if(!fs.existsSync(`./database.json`)){
+		if(!fs.existsSync(`./${configJSON.startCB}database${configJSON.endCB}.json`)){
 			//the database only contains a users array, if you want to add more to the database, this would be
 			//crucial to edit so that new databases would have these features
 			let newDatabaseFile = {users:[]};
 			//JSON compression and file write
 			let dataSave = JSON.stringify(newDatabaseFile);
-			fs.writeFileSync(`./database.json`,dataSave);
+			fs.writeFileSync(`./${configJSON.startCB}database${configJSON.endCB}.json`,dataSave);
 		}
 		//read the database file and parse it into JSON object
-		let dataRead = fs.readFileSync(`./database.json`);
+		let dataRead = fs.readFileSync(`./${configJSON.startCB}database${configJSON.endCB}.json`);
 		let dataJSON = JSON.parse(dataRead);
 		//flag that determines if a user exists within the database file, if this remains false then the user will be added at the end
 		let userFound = false;
@@ -152,7 +156,7 @@ client.on('message', message => {
 					message.channel.send(`You have hit the boss ${dataJSON.users[i].hits} time(s) today`);
 					//updates database file
 					let dataSave = JSON.stringify(dataJSON);
-					fs.writeFileSync(`./database.json`,dataSave);
+					fs.writeFileSync(`./${configJSON.startCB}database${configJSON.endCB}.json`,dataSave);
 				}
 				break;
 			}
@@ -171,7 +175,7 @@ client.on('message', message => {
 				dataJSON.users.push(newUser);
 				//write it all to the database
 				let dataSave = JSON.stringify(dataJSON);
-				fs.writeFileSync(`./database.json`,dataSave);
+				fs.writeFileSync(`./${configJSON.startCB}database${configJSON.endCB}.json`,dataSave);
 				//alert the user
 				message.channel.send(`You have hit the boss 1 time today`);
 			}
@@ -181,13 +185,15 @@ client.on('message', message => {
 	else if(message.content === '!eriko checkTodaysHits'){
 		//display the all users hits for today
 		console.log(message.author.username + ' is checking todays hits');
-		if(!fs.existsSync(`./database.json`)){
+		let configRead = fs.readFileSync(`./config.json`);
+		let configJSON = JSON.parse(configRead);
+		if(!fs.existsSync(`./${configJSON.startCB}database${configJSON.endCB}.json`)){
 			//if the file doesn't exist, do nothing and report it to console
 			console.log('No database file found');
 		}
 		else{
 			//read the file and parse it
-			let dataRead = fs.readFileSync(`./database.json`);
+			let dataRead = fs.readFileSync(`./${configJSON.startCB}database${configJSON.endCB}.json`);
 			let dataJSON = JSON.parse(dataRead);
 			//initialize the message with something, discord js crashes if an empty message is sent
 			let totalHits = 0;
@@ -203,31 +209,54 @@ client.on('message', message => {
 		}
 	}
 	
-	// !eriko checkHits MMDDYYYY
+	// !eriko checkHits MMDDYYYY or !eriko checkHits CBDay
 	else if(message.content.startsWith('!eriko checkHits')){
 		//chop up the message into individual parts based on spaces
 		let chop = message.content.split(" ");
 		//check if the length and size of the message is okay
-		if(chop.length != 3 || chop[2].length != 8){
-			message.channel.send(`Usage: !eriko checkHits MMDDYYYY (For example: July 5 2021 UTC is 07052021)`);
+		if(chop.length != 3 || (chop[2].length != 8 && chop[2].length != 1)){
+			message.channel.send(`Usage: !eriko checkHits MMDDYYYY or CB day(For example: July 5 2021 UTC is 07052021)`);
 		}
 		else{
 			//pull the final date part into a separate variable
 			let selectedDate = chop[chop.length-1];
 			console.log(message.author.username + ' is checking hits for ' + selectedDate);
 			let totalHits = 0;
-			
+			let configRead = fs.readFileSync(`./config.json`);
+			let configJSON = JSON.parse(configRead);
 			//check that the database exists
-			if(!fs.existsSync(`./database.json`)){
+			if(!fs.existsSync(`./${configJSON.startCB}database${configJSON.endCB}.json`)){
 				console.log('No database file found');
 			}
 			else{
 				//read the database
-				let dataRead = fs.readFileSync(`./database.json`);
+				let dataRead = fs.readFileSync(`./${configJSON.startCB}database${configJSON.endCB}.json`);
 				let dataJSON = JSON.parse(dataRead);
+				//do numbers magic to figure out date diffs
+				let startCB = new Date(`${configJSON.startCB.substring(0,2)}/${configJSON.startCB.substring(2,4)}/${configJSON.startCB.substring(4,8)}`);
+				console.log(startCB);
+				
+				let lookDate = '';
+				if(chop[2].length == 1){
+					//user is searching by CB day
+					lookDate = new Date();
+					lookDate.setDate(startCB.getDate() + parseInt(selectedDate) - 1);
+					
+					let recordMonth = ('0' + (lookDate.getUTCMonth()+1)).slice(-2);
+					let recordDay = ('0' + lookDate.getUTCDate()).slice(-2);
+					selectedDate = "" + recordMonth + recordDay + lookDate.getUTCFullYear();
+				}
+				else{
+					//user is searching by MMDDYYYY
+					lookDate = new Date(`${selectedDate.substring(0,2)}/${selectedDate.substring(2,4)}/${selectedDate.substring(4,8)}`);
+				}
+				
+				let timeDiff = lookDate.getTime() - startCB.getTime();
+				let dayDiff = Math.floor(timeDiff / (1000 * 3600 * 24));
+				dayDiff += 1;
 				
 				//initialize message so discord js doesn't crash
-				let messageToSend = `Hits for ${selectedDate}\n`;
+				let messageToSend = `Hits for ${selectedDate} (Day ${dayDiff} of CB)\n`;
 				for(let i=0;i<dataJSON.users.length;i++){
 					for(let j=0;j<dataJSON.users[i].total.length;j++){
 						//if date is found using date code above, store it to the message
@@ -258,11 +287,11 @@ client.on('message', message => {
 		let formattedDate = "" + recordMonth + recordDay + currentTime.getUTCFullYear();
 		
 		//read the database
-		let dataRead = fs.readFileSync(`./database.json`);
-		let dataJSON = JSON.parse(dataRead);
+		let configRead = fs.readFileSync(`./config.json`);
+		let configJSON = JSON.parse(configRead);
 		
 		//do numbers magic to figure out date diffs
-		let startCB = new Date(`${dataJSON.startCB.substring(0,2)}/${dataJSON.startCB.substring(2,4)}/${dataJSON.startCB.substring(4,8)}`);
+		let startCB = new Date(`${configJSON.startCB.substring(0,2)}/${configJSON.startCB.substring(2,4)}/${configJSON.startCB.substring(4,8)}`);
 		console.log(startCB);
 		
 		let timeDiff = currentTime.getTime() - startCB.getTime();
@@ -285,20 +314,21 @@ client.on('message', message => {
 			let selectedDate = chop[chop.length-1];
 			console.log(message.author.username + ' is setting the CB start for ' + selectedDate);
 			//check that the database exists
-			if(!fs.existsSync(`./database.json`)){
-				console.log('No database file found');
+			if(!fs.existsSync(`./config.json`)){
+				console.log('No config file found');
 			}
 			else{
 				//read the database
-				let dataRead = fs.readFileSync(`./database.json`);
-				let dataJSON = JSON.parse(dataRead);
+				let configRead = fs.readFileSync(`./config.json`);
+				let configJSON = JSON.parse(configRead);
 				
 				//writes the start of CB
-				dataJSON.startCB = selectedDate;
+				configJSON.startCB = selectedDate;
 				
 				//writes to database
-				let dataSave = JSON.stringify(dataJSON);
-				fs.writeFileSync(`./database.json`,dataSave);
+				let configSave = JSON.stringify(configJSON);
+				fs.writeFileSync(`./config.json`,configSave);
+				message.channel.send(`The CB start date has been set to ${selectedDate}`);
 			}
 		}
 	}
@@ -317,15 +347,15 @@ client.on('message', message => {
 			let selectedDate = chop[chop.length-1];
 			console.log(message.author.username + ' is setting the CB end for ' + selectedDate);
 			//check that the database exists
-			if(!fs.existsSync(`./database.json`)){
-				console.log('No database file found');
+			if(!fs.existsSync(`./config.json`)){
+				console.log('No config file found');
 			}
 			else{
 				//read the database
-				let dataRead = fs.readFileSync(`./database.json`);
-				let dataJSON = JSON.parse(dataRead);
+				let configRead = fs.readFileSync(`./config.json`);
+				let configJSON = JSON.parse(configRead);
 				
-				let startCB = new Date(`${dataJSON.startCB.substring(0,2)}/${dataJSON.startCB.substring(2,4)}/${dataJSON.startCB.substring(4,8)}`);
+				let startCB = new Date(`${configJSON.startCB.substring(0,2)}/${configJSON.startCB.substring(2,4)}/${configJSON.startCB.substring(4,8)}`);
 				console.log(startCB);
 				
 				let endCB = new Date(`${selectedDate.substring(0,2)}/${selectedDate.substring(2,4)}/${selectedDate.substring(4,8)}`);
@@ -337,11 +367,13 @@ client.on('message', message => {
 				}
 				
 				//writes the end of CB
-				dataJSON.endCB = selectedDate;
+				configJSON.endCB = selectedDate;
 				
 				//writes to database
-				let dataSave = JSON.stringify(dataJSON);
-				fs.writeFileSync(`./database.json`,dataSave);
+				let configSave = JSON.stringify(configJSON);
+				fs.writeFileSync(`./config.json`,configSave);
+				
+				message.channel.send(`The CB end date has been set to ${selectedDate}`)
 			}
 		}
 	}
@@ -349,7 +381,7 @@ client.on('message', message => {
 	//help menu, any new commands should be added to this for users sake
 	else if(message.content === '!eriko help'){
 		console.log(message.author.username + ' is checking help');
-		message.channel.send(`Use !eriko hit <blank or 1-${MAXHITS}> -> to count that you hit the boss for today!\nUse !eriko checkTodaysHits -> to see everyone's hits for today!\nUse !eriko today -> to see what today's date is!\nUse !eriko checkHits <MMDDYYYY> -> to see the hits for a specific day! (Note though that the time is in UTC and the format is 07052021 for July 5th 2021)\nUse !eriko startCB <MMDDYYYY> -> to set the start date for the CB\nUse !eriko endCB <MMDDYYYY> -> to set the end of a clan battle`);
+		message.channel.send(`Use !eriko hit <blank or 1-${MAXHITS}> -> to count that you hit the boss for today!\nUse !eriko checkTodaysHits -> to see everyone's hits for today!\nUse !eriko today -> to see what today's date is!\nUse !eriko checkHits <MMDDYYYY / CBDay> -> to see the hits for a specific day! (Note though that the time is in UTC and the format is 07052021 for July 5th 2021)\nUse !eriko startCB <MMDDYYYY> -> to set the start date for the CB\nUse !eriko endCB <MMDDYYYY> -> to set the end of a clan battle`);
 	}
 });
 // Log our bot in using the token from https://discord.com/developers/applications
