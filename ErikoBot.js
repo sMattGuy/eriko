@@ -266,7 +266,7 @@ client.on('message', message => {
 		console.log(startCB);
 		
 		let timeDiff = currentTime.getTime() - startCB.getTime();
-		let dayDiff = timeDiff / (1000 * 3600 * 24);
+		let dayDiff = Math.floor(timeDiff / (1000 * 3600 * 24));
 		dayDiff += 1;
 		message.channel.send(`Today's date is ${formattedDate} (Day ${dayDiff} of CB)`);
 	}
