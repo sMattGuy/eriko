@@ -397,7 +397,12 @@ client.on('message', message => {
 			let dayDiff = Math.floor(timeDiff / (1000 * 3600 * 24));
 			dayDiff += 1;
 			
-			message.channel.send(`The next Clan Battle is in ${dayDiff} days!`);3
+			if(dayDiff < 0){
+				message.channel.send(`There is currently an active Clan Battle!`);
+			}
+			else{
+				message.channel.send(`The next Clan Battle is in ${dayDiff} days!`);
+			}
 		}
 	}
 	
