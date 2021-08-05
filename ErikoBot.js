@@ -379,7 +379,7 @@ client.on('message', message => {
 	}
 	
 	else if(message.content === '!eriko contact'){
-		message.channel.send(`Mattguy#4376  -> I makea the bot mama mia`);
+		message.channel.send(`MattGuy#4376  -> I makea the bot mama mia`);
 	}
 	
 	//help menu, any new commands should be added to this for users sake
