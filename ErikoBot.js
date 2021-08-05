@@ -177,7 +177,7 @@ client.on('message', message => {
 				let dataSave = JSON.stringify(dataJSON);
 				fs.writeFileSync(`./${configJSON.startCB}database${configJSON.endCB}.json`,dataSave);
 				//alert the user
-				message.channel.send(`You have hit the boss 1 time today`);
+				message.channel.send(`You have hit the boss ${hitAmount} time(s) today!`);
 			}
 		}
 	}
@@ -302,7 +302,7 @@ client.on('message', message => {
 	
 	//command that will state the start of a clan battle at a specific time
 	// !eriko startCB MMDDYYYY
-	else if(message.content.startsWith('!eriko startCB')){
+	else if(message.content.startsWith('!eriko startCB') && (message.member.roles.has(815669639107051552) || message.member.roles.has(815669643648827452) || message.member.roles.has(872981028262801448) || message.guild.ownerID === message.author.id)){
 		//chop up the message into individual parts based on spaces
 		let chop = message.content.split(" ");
 		//check if the length and size of the message is okay
@@ -378,6 +378,29 @@ client.on('message', message => {
 		}
 	}
 	
+	// !eriko nextCB
+	else if(message.content === '!eriko nextCB')){
+		console.log(message.author.username + ' is checking start date of next cb for ' + selectedDate);
+		//check that the database exists
+		if(!fs.existsSync(`./config.json`)){
+			console.log('No config file found');
+		}
+		else{
+			//read the database
+			let configRead = fs.readFileSync(`./config.json`);
+			let configJSON = JSON.parse(configRead);
+			
+			let startCB = new Date(`${configJSON.startCB.substring(0,2)}/${configJSON.startCB.substring(2,4)}/${configJSON.startCB.substring(4,8)}`);
+			console.log(startCB);
+			
+			let timeDiff = startCB.getTime() - currentTime.getTime();
+			let dayDiff = Math.floor(timeDiff / (1000 * 3600 * 24));
+			dayDiff += 1;
+			
+			message.channel.send(`The next Clan Battle is in ${dayDiff} days!`);3
+		}
+	}
+	
 	else if(message.content === '!eriko contact'){
 		message.channel.send(`MattGuy#4376  -> I makea the bot mama mia`);
 	}
@@ -385,7 +408,7 @@ client.on('message', message => {
 	//help menu, any new commands should be added to this for users sake
 	else if(message.content === '!eriko help'){
 		console.log(message.author.username + ' is checking help');
-		message.channel.send(`Use !eriko hit <blank or 1-${MAXHITS}> -> to count that you hit the boss for today!\nUse !eriko checkTodaysHits -> to see everyone's hits for today!\nUse !eriko today -> to see what today's date is!\nUse !eriko checkHits <MMDDYYYY / CBDay> -> to see the hits for a specific day! (Note though that the time is in UTC and the format is 07052021 for July 5th 2021)\nUse !eriko startCB <MMDDYYYY> -> to set the start date for the CB\nUse !eriko endCB <MMDDYYYY> -> to set the end of a clan battle\n!eriko contact -> give remarks here`);
+		message.channel.send(`Use !eriko hit <blank or 1-${MAXHITS}> -> to count that you hit the boss for today!\nUse !eriko checkTodaysHits -> to see everyone's hits for today!\nUse !eriko today -> to see what today's date is!\nUse !eriko checkHits <MMDDYYYY / CBDay> -> to see the hits for a specific day! (Note though that the time is in UTC and the format is 07052021 for July 5th 2021)\nUse !eriko startCB <MMDDYYYY> -> to set the start date for the CB\nUse !eriko endCB <MMDDYYYY> -> to set the end of a clan battle\n!eriko contact -> give remarks here\nUse !eriko nextCB -> to see the date of the next CB`);
 	}
 });
 // Log our bot in using the token from https://discord.com/developers/applications
