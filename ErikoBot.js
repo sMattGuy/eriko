@@ -379,7 +379,7 @@ client.on('message', message => {
 	}
 	
 	// !eriko nextCB
-	else if(message.content === '!eriko nextCB')){
+	else if(message.content === '!eriko nextCB'){
 		console.log(message.author.username + ' is checking start date of next cb for ' + selectedDate);
 		//check that the database exists
 		if(!fs.existsSync(`./config.json`)){
