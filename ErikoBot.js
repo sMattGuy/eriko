@@ -7,38 +7,45 @@ const client = new Discord.Client();
 // import token and database
 const credentials = require('./auth.json');
 
-//external variable that determins if the database has been reset today
+//external variable that determines if the database has been reset today
 let dayHasPassed = false;
-//sets ready presense
+
+//constants that will make future updates easier
+const MAXHITS = 3;
+
+//sets ready presence
 client.on('ready', () => {
-  client.user.setPresence({
-    status: 'online',
-    activity: {
-        name: 'for !eriko help',
-        type: "WATCHING"
-    }
-  });
-  //list server in console
-  client.guilds.cache.forEach(guild => {
-    console.log(`${guild.name} | ${guild.id}`);
-  });
-  console.log('I am ready!');
+	client.user.setPresence({
+		status: 'online',
+		activity: {
+			name: 'for !eriko help',
+			type: "WATCHING"
+		}
+	});
+	//list server in console
+	client.guilds.cache.forEach(guild => {
+		console.log(`${guild.name} | ${guild.id}`);
+	});
+	console.log('I am ready!');
 });
 // Create an event listener for messages
 client.on('message', message => {
 	//refreshes presence on bot
-   client.user.setPresence({
-      status: 'online',
+	client.user.setPresence({
+		status: 'online',
 		activity: {
-         name: 'for !eriko help',
-         type: "WATCHING"
-      }
-   });
+			name: 'for !eriko help',
+			type: "WATCHING"
+		}
+	});
 	//checks for new day of clan battles
 	let currentTime = new Date();	// this will update every time there is a message emitted, essentially working as a time of message
+	
+	//record the time of a command for debugging
 	if(message.content.startsWith('!eriko')){
 		console.log(currentTime.getHours() + ':' + currentTime.getMinutes() + ' ' + (currentTime.getMonth()+1) + '/' + currentTime.getDate() + '/' + currentTime.getFullYear());
 	}
+	
 	if(currentTime.getUTCHours() < 13 && !dayHasPassed){
 		//if the current time does not equal 13 UTC (9am EST) then it will reset the daily reset checker to false
 		//this is to prevent the issue where if a person was triggering the bot during 13 UTC it would be constantly resetting
@@ -46,6 +53,7 @@ client.on('message', message => {
 		console.log('setting day has passed to true in time check');
 		dayHasPassed = true;
 	}
+	
 	//triggers at 9AM EST or 13 UTC
 	if(currentTime.getUTCHours() >= 13 && dayHasPassed){
 		if(!fs.existsSync(`./database.json`)){
@@ -53,11 +61,11 @@ client.on('message', message => {
 			console.log('No database file found');
 		}
 		else{
-			//this sets the daily reset flag to true, meaning that the daily reset has already occured, see above comment for
+			//this sets the daily reset flag to true, meaning that the daily reset has already occurred, see above comment for
 			//more information on why this is done
 			console.log('setting day has passed to false in daily recording and reset')
 			dayHasPassed = false;
-			//database read in local directory and parseing it into JSON object
+			//database read in local directory and parsing it into JSON object
 			let dataRead = fs.readFileSync(`./database.json`);
 			let dataJSON = JSON.parse(dataRead);
 			//loop that iterates over all users and resets their daily hits to 0
@@ -79,18 +87,32 @@ client.on('message', message => {
 				//actual setting of each user to 0
 				dataJSON.users[i].hits = 0;
 			}
-			//JSON compression and sync file write to database file, overwritting it
+			//JSON compression and sync file write to database file, overwriting it
 			let dataSave = JSON.stringify(dataJSON);
 			fs.writeFileSync(`./database.json`,dataSave);
 		}
 	}
 	
 	//start of user commands
-	if(message.content === '!eriko hit'){
+	if(message.content.startsWith('!eriko hit')){
 		//this command is used so that individual users can report that they have hit the boss
 		//NOTE this bot has no way of actually verifying that the boss was actually hit, so it works on an honor system
 		//possible update would be to somehow include a way of verifying interactions
+		let hitAmount = 1;
 		console.log(message.author.username + ' is hitting the boss');
+		let chop = message.content.split(" ");
+		//check if the length and size of the message is okay
+		if(chop.length > 3){
+			message.channel.send(`Usage: !eriko hit <blank or 1-3>`);
+			return;
+		}
+		if(chop.length == 3){
+			hitAmount = parseInt(chop[chop.length-1]);
+			if(isNaN(hitAmount) || hitAmount > MAXHITS || hitAmount < 1){
+				message.channel.send(`Invalid amount entered! Either enter nothing or 1-3 based on how many hits you have done!`);
+				return;
+			}
+		}
 		//stores the user id and name
 		let hitUser = message.author.id;
 		let hitUserName = message.author.username;
@@ -110,56 +132,22 @@ client.on('message', message => {
 		let userFound = false;
 		//time recording for daily totals for user
 		//this works by essentially creating PrST (Pricon Standard Time) where 9AM EST (13 UTC) is converted to 0 PrST
-		/*
-		if(currentTime.getUTCHours() < 13){
-			//if the current time is between 0 UTC and 13 UTC, roll back 1 day
-			currentTime.setDate(currentTime.getDate() - 1);
-		}
-		//time variables that pad zeros and un-zero index the month
-		let recordMonth = ('0' + (currentTime.getUTCMonth()+1)).slice(-2);
-		let recordDay = ('0' + currentTime.getUTCDate()).slice(-2);
-		//the date formatted as MMDDYYYY
-		let formattedDate = "" + recordMonth + recordDay + currentTime.getUTCFullYear();
-		*/
 		for(let i=0;i<dataJSON.users.length;i++){
 			//if we find the users ID in the database, we update their personal stats
 			if(hitUser == dataJSON.users[i].id){
-				//set our found flag to true to show that the user exists in the database and doesnt need to be added
+				//set our found flag to true to show that the user exists in the database and doesn't need to be added
 				userFound = true;
 				//check to see if the user has already done their 3 hits for today
-				if(dataJSON.users[i].hits == 3){
-					console.log(message.author.username + ' has hit 3 times day');
-					message.channel.send(`You have already hit 3 times today!`);
+				if(dataJSON.users[i].hits == MAXHITS){
+					console.log(message.author.username + ' has hit the max times day');
+					message.channel.send(`You have already hit ${MAXHITS} times today!`);
+				}
+				else if(dataJSON.users[i].hits + hitAmount > MAXHITS){
+					message.channel.send(`Invalid amount entered! You already recorded ${dataJSON.users[i].hits} hit(s) today, ${hitAmount} puts you over ${MAXHITS} hits!`);
 				}
 				else{
 					//increase the users daily hits
-					dataJSON.users[i].hits += 1;
-					//flag to search for todays hits, if its not found a new entry is made for today
-					
-					//commenting out to test if the newer system works
-					/*
-					let foundDate = false;
-					for(let j=0;j<dataJSON.users[i].total.length;j++){
-						//the date was found
-						if(dataJSON.users[i].total[j].date == formattedDate){
-							//set our flag to true and update the hits for today
-							//alternatively this can be done in the daily update section above where we set the hits back to 0
-							//the only issue with doing that is that if someone called for the hits today at the current date it would show
-							//up empty, despite people hitting today
-							//this issue is only present if you consider that !eriko checkTodaysHits and !eriko checkHits MMDDYYYY will
-							//always show the same information for the same day
-							//to summarize: we can remove this and change it to updating in the daily reset section
-							foundDate = true;
-							dataJSON.users[i].total[j].hits += 1;
-							break;
-						}
-					}
-					if(!foundDate){
-						//updates the user totals to the new date, see above on how this can be improved
-						let newDailyHits = {'date':formattedDate,'hits':1};
-						dataJSON.users[i].total.push(newDailyHits);
-					}
-					*/
+					dataJSON.users[i].hits += hitAmount;
 					//alerts user
 					message.channel.send(`You have hit the boss ${dataJSON.users[i].hits} time(s) today`);
 					//updates database file
@@ -172,22 +160,29 @@ client.on('message', message => {
 		//new entry 
 		if(!userFound){
 			//this user object should be changed in the event that a new addition is made to the bot
-			//simply tacking it on to the end should be fine
-			let newUser = {'id':hitUser,'name':hitUserName,'hits':1,'total':[]};
-			//update user file
-			dataJSON.users.push(newUser);
-			//write it all to the database
-			let dataSave = JSON.stringify(dataJSON);
-			fs.writeFileSync(`./database.json`,dataSave);
-			//alert the user
-			message.channel.send(`You have hit the boss 1 time today`);
+			if(hitAmount > MAXHITS){
+				//if they enter more than MAXHITS 
+				message.channel.send(`Invalid amount entered! You already recorded 0 hit(s) today, ${hitAmount} puts you over ${MAXHITS} hits!`);
+			}
+			else{
+				//simply tacking it on to the end should be fine
+				let newUser = {'id':hitUser,'name':hitUserName,'hits':hitAmount,'total':[]};
+				//update user file
+				dataJSON.users.push(newUser);
+				//write it all to the database
+				let dataSave = JSON.stringify(dataJSON);
+				fs.writeFileSync(`./database.json`,dataSave);
+				//alert the user
+				message.channel.send(`You have hit the boss 1 time today`);
+			}
 		}
 	}
+	
 	else if(message.content === '!eriko checkTodaysHits'){
 		//display the all users hits for today
 		console.log(message.author.username + ' is checking todays hits');
 		if(!fs.existsSync(`./database.json`)){
-			//if the file doesnt exist, do nothing and report it to console
+			//if the file doesn't exist, do nothing and report it to console
 			console.log('No database file found');
 		}
 		else{
@@ -195,15 +190,19 @@ client.on('message', message => {
 			let dataRead = fs.readFileSync(`./database.json`);
 			let dataJSON = JSON.parse(dataRead);
 			//initialize the message with something, discord js crashes if an empty message is sent
+			let totalHits = 0;
 			let messageToSend = `Today's hits\n`;
 			for(let i=0;i<dataJSON.users.length;i++){
 				//go through all users and display their name plus how many hits they've done today
+				totalHits += dataJSON.users[i].hits;
 				messageToSend += `${dataJSON.users[i].name} : ${dataJSON.users[i].hits}\n`;
 			}
+			messageToSend += `Total for today : ${totalHits}`;
 			//send resulting message to chat, as a code block for mono space font
 			message.channel.send(messageToSend,{'code':true});
 		}
 	}
+	
 	// !eriko checkHits MMDDYYYY
 	else if(message.content.startsWith('!eriko checkHits')){
 		//chop up the message into individual parts based on spaces
@@ -216,6 +215,8 @@ client.on('message', message => {
 			//pull the final date part into a separate variable
 			let selectedDate = chop[chop.length-1];
 			console.log(message.author.username + ' is checking hits for ' + selectedDate);
+			let totalHits = 0;
+			
 			//check that the database exists
 			if(!fs.existsSync(`./database.json`)){
 				console.log('No database file found');
@@ -224,26 +225,30 @@ client.on('message', message => {
 				//read the database
 				let dataRead = fs.readFileSync(`./database.json`);
 				let dataJSON = JSON.parse(dataRead);
-				//initialize message so discord js doesnt crash
+				
+				//initialize message so discord js doesn't crash
 				let messageToSend = `Hits for ${selectedDate}\n`;
 				for(let i=0;i<dataJSON.users.length;i++){
 					for(let j=0;j<dataJSON.users[i].total.length;j++){
 						//if date is found using date code above, store it to the message
 						if(selectedDate == dataJSON.users[i].total[j].date){
+							totalHits += dataJSON.users[i].total[j].hits;
 							messageToSend += `${dataJSON.users[i].name} : ${dataJSON.users[i].total[j].hits}\n`;
 							break;
 						}
 					}
 				}
+				messageToSend += `Total for ${selectedDate} : ${totalHits}`;
 				//send message as a code block
 				message.channel.send(messageToSend,{'code':true});
 			}
 		}
 	}
+	
 	//simple command that just tells users what today is in PrST
 	else if(message.content === '!eriko today'){
-		console.log(message.author.username + ' is checking todays date');
-		//this uses the same time conversion as above, so check there for the explination on PrST
+		console.log(message.author.username + ' is checking today\'s date');
+		//this uses the same time conversion as above, so check there for the explanation on PrST
 		if(currentTime.getUTCHours() < 13){
 			currentTime.setDate(currentTime.getDate() - 1);
 		}
@@ -252,12 +257,99 @@ client.on('message', message => {
 		let recordDay = ('0' + currentTime.getUTCDate()).slice(-2);
 		let formattedDate = "" + recordMonth + recordDay + currentTime.getUTCFullYear();
 		
-		message.channel.send(`Today's date is ${formattedDate}`);
+		//read the database
+		let dataRead = fs.readFileSync(`./database.json`);
+		let dataJSON = JSON.parse(dataRead);
+		
+		//do numbers magic to figure out date diffs
+		let startCB = new Date(`${dataJSON.startCB.substring(0,2)}/${dataJSON.startCB.substring(2,4)}/${dataJSON.startCB.substring(4,8)}`);
+		console.log(startCB);
+		
+		let timeDiff = currentTime.getTime() - startCB.getTime();
+		let dayDiff = timeDiff / (1000 * 3600 * 24);
+		dayDiff += 1;
+		message.channel.send(`Today's date is ${formattedDate} (Day ${dayDiff} of CB)`);
 	}
+	
+	//command that will state the start of a clan battle at a specific time
+	// !eriko startCB MMDDYYYY
+	else if(message.content.startsWith('!eriko startCB')){
+		//chop up the message into individual parts based on spaces
+		let chop = message.content.split(" ");
+		//check if the length and size of the message is okay
+		if(chop.length != 3 || chop[2].length != 8){
+			message.channel.send(`Usage: !eriko startCB MMDDYYYY (For example: July 5 2021 UTC is 07052021)`);
+		}
+		else{
+			//pull the final date part into a separate variable
+			let selectedDate = chop[chop.length-1];
+			console.log(message.author.username + ' is setting the CB start for ' + selectedDate);
+			//check that the database exists
+			if(!fs.existsSync(`./database.json`)){
+				console.log('No database file found');
+			}
+			else{
+				//read the database
+				let dataRead = fs.readFileSync(`./database.json`);
+				let dataJSON = JSON.parse(dataRead);
+				
+				//writes the start of CB
+				dataJSON.startCB = selectedDate;
+				
+				//writes to database
+				let dataSave = JSON.stringify(dataJSON);
+				fs.writeFileSync(`./database.json`,dataSave);
+			}
+		}
+	}
+	
+	//command that will state the end of a clan battle at a specific time
+	// !eriko endCB MMDDYYYY
+	else if(message.content.startsWith('!eriko endCB')){
+		//chop up the message into individual parts based on spaces
+		let chop = message.content.split(" ");
+		//check if the length and size of the message is okay
+		if(chop.length != 3 || chop[2].length != 8){
+			message.channel.send(`Usage: !eriko endCB MMDDYYYY (For example: July 5 2021 UTC is 07052021)`);
+		}
+		else{
+			//pull the final date part into a separate variable
+			let selectedDate = chop[chop.length-1];
+			console.log(message.author.username + ' is setting the CB end for ' + selectedDate);
+			//check that the database exists
+			if(!fs.existsSync(`./database.json`)){
+				console.log('No database file found');
+			}
+			else{
+				//read the database
+				let dataRead = fs.readFileSync(`./database.json`);
+				let dataJSON = JSON.parse(dataRead);
+				
+				let startCB = new Date(`${dataJSON.startCB.substring(0,2)}/${dataJSON.startCB.substring(2,4)}/${dataJSON.startCB.substring(4,8)}`);
+				console.log(startCB);
+				
+				let endCB = new Date(`${selectedDate.substring(0,2)}/${selectedDate.substring(2,4)}/${selectedDate.substring(4,8)}`);
+				console.log(endCB);
+				
+				if(endCB.getTime() - startCB.getTime() < 0){
+					message.channel.send(`End time cannot be before the start time!`);
+					return;
+				}
+				
+				//writes the end of CB
+				dataJSON.endCB = selectedDate;
+				
+				//writes to database
+				let dataSave = JSON.stringify(dataJSON);
+				fs.writeFileSync(`./database.json`,dataSave);
+			}
+		}
+	}
+	
 	//help menu, any new commands should be added to this for users sake
 	else if(message.content === '!eriko help'){
 		console.log(message.author.username + ' is checking help');
-		message.channel.send(`Use !eriko hit -> to count that you hit the boss for today!\nUse !eriko checkTodaysHits -> to see everyone's hits for today!\nUse !eriko today -> to see what today's date is!\nUse !eriko checkHits <MMDDYYYY> -> to see the hits for a specific day! (Note though that the time is in UTC and the format is 07052021 for July 5th 2021)`);
+		message.channel.send(`Use !eriko hit <blank or 1-${MAXHITS}> -> to count that you hit the boss for today!\nUse !eriko checkTodaysHits -> to see everyone's hits for today!\nUse !eriko today -> to see what today's date is!\nUse !eriko checkHits <MMDDYYYY> -> to see the hits for a specific day! (Note though that the time is in UTC and the format is 07052021 for July 5th 2021)\nUse !eriko startCB <MMDDYYYY> -> to set the start date for the CB\nUse !eriko endCB <MMDDYYYY> -> to set the end of a clan battle`);
 	}
 });
 // Log our bot in using the token from https://discord.com/developers/applications
