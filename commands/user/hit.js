@@ -37,16 +37,24 @@ module.exports = {
 		for(let cfg=0;cfg<configJSON.servers.length;cfg++){
 			if(configJSON.servers[cfg].id == message.guild.id){
 				let startCB = new Date(`${configJSON.servers[cfg].startCB.substring(0,2)}/${configJSON.servers[cfg].startCB.substring(2,4)}/${configJSON.servers[cfg].startCB.substring(4,8)}`);
+				let endCB = new Date(`${configJSON.servers[cfg].endCB.substring(0,2)}/${configJSON.servers[cfg].endCB.substring(2,4)}/${configJSON.servers[cfg].endCB.substring(4,8)}`);
 				console.log(startCB);
+				console.log(endCB);
 				let currentTime = new Date();
 				let timeDiff = startCB.getTime() - currentTime.getTime();
 				let dayDiff = Math.floor(timeDiff / (1000 * 3600 * 24));
-				dayDiff += 1;
 				
 				if(dayDiff > 0){
 					message.channel.send(`The next Clan Battle is in ${dayDiff} days!`);
 					return;
 				}
+				timeDiff = endCB.getTime() - currentTime.getTime();
+				dayDiff = Math.floor(timeDiff / (1000 * 3600 * 24));
+				if(dayDiff < 0){
+					message.channel.send(`The clan battle has already passed!`);
+					return;
+				}
+				
 				if(!fs.existsSync(`./${configJSON.servers[cfg].startCB}${message.guild.id}${configJSON.servers[cfg].endCB}.json`)){
 					//the database only contains a users array, if you want to add more to the database, this would be
 					//crucial to edit so that new databases would have these features
