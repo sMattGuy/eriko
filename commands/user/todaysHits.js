@@ -22,7 +22,7 @@ module.exports = {
 					let currentTime = new Date();
 					let nextEnd = new Date();
 					console.log(currentTime);
-					nextEnd.setDate(nextEnd.getDate() + 1);
+					nextEnd.setUTCDate(nextEnd.getUTCDate() + 1);
 					console.log(nextEnd);
 					nextEnd.setUTCHours(13);
 					nextEnd.setUTCMinutes(0);
