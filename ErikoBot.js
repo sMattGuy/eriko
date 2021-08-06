@@ -302,7 +302,7 @@ client.on('message', message => {
 	
 	//command that will state the start of a clan battle at a specific time
 	// !eriko startCB MMDDYYYY
-	else if(message.content.startsWith('!eriko startCB') && (message.member.roles.cache.has(815669639107051552) || message.member.roles.cache.has(815669643648827452) || message.member.roles.cache.has(872981028262801448) || message.guild.ownerID === message.author.id)){
+	else if(message.content.startsWith('!eriko startCB') && (message.member.roles.cache.has('815669639107051552') || message.member.roles.cache.has('815669643648827452') || message.member.roles.cache.has('872981028262801448') || message.guild.ownerID === message.author.id)){
 		//chop up the message into individual parts based on spaces
 		let chop = message.content.split(" ");
 		//check if the length and size of the message is okay
@@ -335,7 +335,7 @@ client.on('message', message => {
 	
 	//command that will state the end of a clan battle at a specific time
 	// !eriko endCB MMDDYYYY
-	else if(message.content.startsWith('!eriko endCB') && (message.member.roles.cache.has(815669639107051552) || message.member.roles.cache.has(815669643648827452) || message.member.roles.cache.has(872981028262801448) || message.guild.ownerID === message.author.id)){
+	else if(message.content.startsWith('!eriko endCB') && (message.member.roles.cache.has('815669639107051552') || message.member.roles.cache.has('815669643648827452') || message.member.roles.cache.has('872981028262801448') || message.guild.ownerID === message.author.id)){
 		//chop up the message into individual parts based on spaces
 		let chop = message.content.split(" ");
 		//check if the length and size of the message is okay
