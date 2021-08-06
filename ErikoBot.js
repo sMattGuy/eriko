@@ -378,6 +378,48 @@ client.on('message', message => {
 		}
 	}
 	
+	// !eriko removeHits userID
+	else if(message.content.startsWith('!eriko removeHits') && (message.member.roles.cache.has('815669639107051552') || message.member.roles.cache.has('815669643648827452') || message.member.roles.cache.has('872981028262801448') || message.guild.ownerID === message.author.id)){
+		//chop up the message into individual parts based on spaces
+		let chop = message.content.split(" ");
+		//check if the length and size of the message is okay
+		if(chop.length != 3 || chop[2].length != 8){
+			message.channel.send(`Usage: !eriko removeHits <userID>`);
+		}
+		else{
+			//pull the final date part into a separate variable
+			let selectedUser = chop[chop.length-1];
+			console.log(message.author.username + ' is removing hits for id ' + selectedUser);
+			//check that the database exists
+			if(!fs.existsSync(`./config.json`)){
+				console.log('No config file found');
+			}
+			else{
+				//read the database
+				let configRead = fs.readFileSync(`./config.json`);
+				let configJSON = JSON.parse(configRead);
+				
+				if(!fs.existsSync(`./${configJSON.startCB}database${configJSON.endCB}.json`)){
+					console.log('No database file found');
+				}
+				else{
+					let dataRead = fs.readFileSync(`./${configJSON.startCB}database${configJSON.endCB}.json`);
+					let dataJSON = JSON.parse(dataRead);
+					
+					for(let i=0;i<dataJSON.users.length;i++){
+						if(dataJSON.users[i].id == selectedUser){
+							dataJSON.users[i].hits = 0;
+							let dataSave = JSON.stringify(dataJSON);
+							fs.writeFileSync(`./${configJSON.startCB}database${configJSON.endCB}.json`,dataSave);
+							message.channel.send(`${dataJSON.users[i].name} has had their hits set to 0!`);
+							break;
+						}
+					}
+				}
+			}
+		}
+	}
+	
 	// !eriko nextCB
 	else if(message.content === '!eriko nextCB'){
 		console.log(message.author.username + ' is checking start date of next cb');
@@ -405,6 +447,8 @@ client.on('message', message => {
 			}
 		}
 	}
+	
+	
 	
 	else if(message.content === '!eriko contact'){
 		message.channel.send(`MattGuy#4376  -> I makea the bot mama mia`);
