@@ -383,7 +383,7 @@ client.on('message', message => {
 		//chop up the message into individual parts based on spaces
 		let chop = message.content.split(" ");
 		//check if the length and size of the message is okay
-		if(chop.length != 3 || chop[2].length != 8){
+		if(chop.length != 3){
 			message.channel.send(`Usage: !eriko removeHits <userID>`);
 		}
 		else{
