@@ -447,17 +447,17 @@ client.on('message', message => {
 			}
 		}
 	}
-	
-	
-	
 	else if(message.content === '!eriko contact'){
 		message.channel.send(`MattGuy#4376  -> I makea the bot mama mia`);
 	}
-	
+	else if(message.content === '!eriko modHelp' && (message.member.roles.cache.has('815669639107051552') || message.member.roles.cache.has('815669643648827452') || message.member.roles.cache.has('872981028262801448') || message.guild.ownerID === message.author.id)){
+		console.log(message.author.username + ' is checking help');
+		message.channel.send(`\nUse !eriko startCB <MMDDYYYY> -> to set the start date for the CB\nUse !eriko endCB <MMDDYYYY> -> to set the end of a clan battle\nUse !eriko removeHits <userID> -> to remove a users hits for today`);
+	}
 	//help menu, any new commands should be added to this for users sake
 	else if(message.content === '!eriko help'){
 		console.log(message.author.username + ' is checking help');
-		message.channel.send(`Use !eriko hit <blank or 1-${MAXHITS}> -> to count that you hit the boss for today!\nUse !eriko checkTodaysHits -> to see everyone's hits for today!\nUse !eriko today -> to see what today's date is!\nUse !eriko checkHits <MMDDYYYY / CBDay> -> to see the hits for a specific day! (Note though that the time is in UTC and the format is 07052021 for July 5th 2021)\nUse !eriko startCB <MMDDYYYY> -> to set the start date for the CB\nUse !eriko endCB <MMDDYYYY> -> to set the end of a clan battle\n!eriko contact -> give remarks here\nUse !eriko nextCB -> to see the date of the next CB`);
+		message.channel.send(`Use !eriko hit <blank or 1-${MAXHITS}> -> to count that you hit the boss for today!\nUse !eriko checkTodaysHits -> to see everyone's hits for today!\nUse !eriko today -> to see what today's date is!\nUse !eriko checkHits <MMDDYYYY / CBDay> -> to see the hits for a specific day! (Note though that the time is in UTC and the format is 07052021 for July 5th 2021)\n!eriko contact -> give remarks here\nUse !eriko nextCB -> to see the date of the next CB`);
 	}
 });
 // Log our bot in using the token from https://discord.com/developers/applications
