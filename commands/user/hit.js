@@ -50,7 +50,7 @@ module.exports = {
 				}
 				timeDiff = endCB.getTime() - currentTime.getTime();
 				dayDiff = Math.floor(timeDiff / (1000 * 3600 * 24));
-				if(dayDiff < 0){
+				if(dayDiff <= 0){
 					message.channel.send(`The clan battle has already passed!`);
 					return;
 				}
