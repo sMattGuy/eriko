@@ -25,18 +25,18 @@ module.exports = {
 					let configJSON = JSON.parse(configRead);
 					for(let cfg=0;cfg<configJSON.servers.length;cfg++){
 						if(configJSON.servers[cfg].id == message.guild.id){
-							if(!fs.existsSync(`./${configJSON.servers[cfg].startCB}${message.guild.id}${configJSON.servers[cfg].endCB}.json`)){
+							if(!fs.existsSync(`./databases/${configJSON.servers[cfg].startCB}${message.guild.id}${configJSON.servers[cfg].endCB}.json`)){
 								console.log('No database file found');
 							}
 							else{
-								let dataRead = fs.readFileSync(`./${configJSON.servers[cfg].startCB}${message.guild.id}${configJSON.servers[cfg].endCB}.json`);
+								let dataRead = fs.readFileSync(`./databases/${configJSON.servers[cfg].startCB}${message.guild.id}${configJSON.servers[cfg].endCB}.json`);
 								let dataJSON = JSON.parse(dataRead);
 								
 								for(let i=0;i<dataJSON.users.length;i++){
 									if(dataJSON.users[i].id == selectedUser){
 										dataJSON.users[i].hits = 0;
 										let dataSave = JSON.stringify(dataJSON);
-										fs.writeFileSync(`./${configJSON.servers[cfg].startCB}${message.guild.id}${configJSON.servers[cfg].endCB}.json`,dataSave);
+										fs.writeFileSync(`./databases/${configJSON.servers[cfg].startCB}${message.guild.id}${configJSON.servers[cfg].endCB}.json`,dataSave);
 										message.channel.send(`${dataJSON.users[i].name} has had their hits set to 0!`);
 										break;
 									}

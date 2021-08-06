@@ -55,16 +55,16 @@ module.exports = {
 					return;
 				}
 				
-				if(!fs.existsSync(`./${configJSON.servers[cfg].startCB}${message.guild.id}${configJSON.servers[cfg].endCB}.json`)){
+				if(!fs.existsSync(`./databases/${configJSON.servers[cfg].startCB}${message.guild.id}${configJSON.servers[cfg].endCB}.json`)){
 					//the database only contains a users array, if you want to add more to the database, this would be
 					//crucial to edit so that new databases would have these features
 					let newDatabaseFile = {users:[]};
 					//JSON compression and file write
 					let dataSave = JSON.stringify(newDatabaseFile);
-					fs.writeFileSync(`./${configJSON.servers[cfg].startCB}${message.guild.id}${configJSON.servers[cfg].endCB}.json`,dataSave);
+					fs.writeFileSync(`./databases/${configJSON.servers[cfg].startCB}${message.guild.id}${configJSON.servers[cfg].endCB}.json`,dataSave);
 				}
 				//read the database file and parse it into JSON object
-				let dataRead = fs.readFileSync(`./${configJSON.servers[cfg].startCB}${message.guild.id}${configJSON.servers[cfg].endCB}.json`);
+				let dataRead = fs.readFileSync(`./databases/${configJSON.servers[cfg].startCB}${message.guild.id}${configJSON.servers[cfg].endCB}.json`);
 				let dataJSON = JSON.parse(dataRead);
 				//flag that determines if a user exists within the database file, if this remains false then the user will be added at the end
 				let userFound = false;
@@ -90,7 +90,7 @@ module.exports = {
 							message.channel.send(`You have hit the boss ${dataJSON.users[i].hits} time(s) today`);
 							//updates database file
 							let dataSave = JSON.stringify(dataJSON);
-							fs.writeFileSync(`./${configJSON.servers[cfg].startCB}${message.guild.id}${configJSON.servers[cfg].endCB}.json`,dataSave);
+							fs.writeFileSync(`./databases/${configJSON.servers[cfg].startCB}${message.guild.id}${configJSON.servers[cfg].endCB}.json`,dataSave);
 						}
 						break;
 					}
@@ -109,7 +109,7 @@ module.exports = {
 						dataJSON.users.push(newUser);
 						//write it all to the database
 						let dataSave = JSON.stringify(dataJSON);
-						fs.writeFileSync(`./${configJSON.servers[cfg].startCB}${message.guild.id}${configJSON.servers[cfg].endCB}.json`,dataSave);
+						fs.writeFileSync(`./databases/${configJSON.servers[cfg].startCB}${message.guild.id}${configJSON.servers[cfg].endCB}.json`,dataSave);
 						//alert the user
 						message.channel.send(`You have hit the boss ${hitAmount} time(s) today!`);
 					}

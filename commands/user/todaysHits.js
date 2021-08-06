@@ -14,7 +14,7 @@ module.exports = {
 		let configJSON = JSON.parse(configRead);
 		for(let cfg=0;cfg<configJSON.servers.length;cfg++){
 			if(configJSON.servers[cfg].id == message.guild.id){
-				if(!fs.existsSync(`./${configJSON.servers[cfg].startCB}${message.guild.id}${configJSON.servers[cfg].endCB}.json`)){
+				if(!fs.existsSync(`./databases/${configJSON.servers[cfg].startCB}${message.guild.id}${configJSON.servers[cfg].endCB}.json`)){
 					//if the file doesn't exist, do nothing and report it to console
 					console.log('No database file found');
 				}
@@ -33,7 +33,7 @@ module.exports = {
 					let minDiff = Math.round(((msDiff % 86400000) % 3600000) / 60000);
 					
 					//read the file and parse it
-					let dataRead = fs.readFileSync(`./${configJSON.servers[cfg].startCB}${message.guild.id}${configJSON.servers[cfg].endCB}.json`);
+					let dataRead = fs.readFileSync(`./databases/${configJSON.servers[cfg].startCB}${message.guild.id}${configJSON.servers[cfg].endCB}.json`);
 					let dataJSON = JSON.parse(dataRead);
 					//initialize the message with something, discord js crashes if an empty message is sent
 					let totalHits = 0;

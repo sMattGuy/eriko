@@ -20,12 +20,12 @@ module.exports = {
 			for(let cfg=0;cfg<configJSON.servers.length;cfg++){
 				if(configJSON.servers[cfg].id == message.guild.id){
 					//check that the database exists
-					if(!fs.existsSync(`./${configJSON.servers[cfg].startCB}${message.guild.id}${configJSON.servers[cfg].endCB}.json`)){
+					if(!fs.existsSync(`./databases/${configJSON.servers[cfg].startCB}${message.guild.id}${configJSON.servers[cfg].endCB}.json`)){
 						console.log('No database file found');
 					}
 					else{
 						//read the database
-						let dataRead = fs.readFileSync(`./${configJSON.servers[cfg].startCB}${message.guild.id}${configJSON.servers[cfg].endCB}.json`);
+						let dataRead = fs.readFileSync(`./databases/${configJSON.servers[cfg].startCB}${message.guild.id}${configJSON.servers[cfg].endCB}.json`);
 						let dataJSON = JSON.parse(dataRead);
 						//do numbers magic to figure out date diffs
 						let startCB = new Date(`${configJSON.servers[cfg].startCB.substring(0,2)}/${configJSON.servers[cfg].startCB.substring(2,4)}/${configJSON.servers[cfg].startCB.substring(4,8)}`);

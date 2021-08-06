@@ -74,7 +74,7 @@ client.on('message', message => {
 			let configRead = fs.readFileSync(`./config.json`);
 			let configJSON = JSON.parse(configRead);
 			for(let cfg=0;cfg<configJSON.servers.length;cfg++){
-				if(!fs.existsSync(`./${configJSON.servers[cfg].startCB}${message.guild.id}${configJSON.servers[cfg].endCB}.json`)){
+				if(!fs.existsSync(`./databases/${configJSON.servers[cfg].startCB}${message.guild.id}${configJSON.servers[cfg].endCB}.json`)){
 					//if there is no database file, do nothing
 					console.log('No database file found');
 				}
@@ -84,7 +84,7 @@ client.on('message', message => {
 					console.log('setting day has passed to false in daily recording and reset')
 					dayHasPassed = false;
 					//database read in local directory and parsing it into JSON object
-					let dataRead = fs.readFileSync(`./${configJSON.servers[cfg].startCB}${message.guild.id}${configJSON.servers[cfg].endCB}.json`);
+					let dataRead = fs.readFileSync(`./databases/${configJSON.servers[cfg].startCB}${message.guild.id}${configJSON.servers[cfg].endCB}.json`);
 					let dataJSON = JSON.parse(dataRead);
 					//loop that iterates over all users and resets their daily hits to 0
 					for(let i=0;i<dataJSON.users.length;i++){
@@ -107,7 +107,7 @@ client.on('message', message => {
 					}
 					//JSON compression and sync file write to database file, overwriting it
 					let dataSave = JSON.stringify(dataJSON);
-					fs.writeFileSync(`./${configJSON.servers[cfg].startCB}${message.guild.id}${configJSON.servers[cfg].endCB}.json`,dataSave);
+					fs.writeFileSync(`./databases/${configJSON.servers[cfg].startCB}${message.guild.id}${configJSON.servers[cfg].endCB}.json`,dataSave);
 				}
 			}
 		}
