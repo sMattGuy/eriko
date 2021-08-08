@@ -31,7 +31,7 @@ module.exports = {
 				let timeDiff = currentTime.getTime() - startCB.getTime();
 				let dayDiff = Math.floor(timeDiff / (1000 * 3600 * 24));
 				dayDiff += 1;
-				message.channel.send(`Today's date is ${formattedDate} (Day ${dayDiff} of CB)`);
+				interaction.reply(`Today's date is ${formattedDate} (Day ${dayDiff} of CB)`);
 				break;
 			}
 		}
