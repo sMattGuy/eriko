@@ -21,6 +21,7 @@ module.exports = {
 				if(!fs.existsSync(`./databases/${configJSON.servers[cfg].startCB}${interaction.guild.id}${configJSON.servers[cfg].endCB}.json`)){
 					console.log('No database file found');
 					interaction.reply(`No hits have been recorded!`);
+					return;
 				}
 				else{
 					//read the database
@@ -64,6 +65,7 @@ module.exports = {
 					messageToSend += `Total for ${selectedDate} : ${totalHits}`;
 					//send message as a code block
 					interaction.reply(messageToSend,{'code':true});
+					return;
 				}
 				break;
 			}
