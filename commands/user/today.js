@@ -1,4 +1,5 @@
 const fs = require('fs');
+const { MessageEmbed } = require('discord.js');
 
 module.exports = {
 	name: 'today',
@@ -16,7 +17,10 @@ module.exports = {
 		let formattedDate = "" + recordMonth + recordDay + currentTime.getUTCFullYear();
 		if(!fs.existsSync(`./config.json`)){
 			console.log('No config file found');
-			interaction.reply(`The next CB has not been set up!`);
+			const noConfigEmbed = new MessageEmbed()
+				.setColor('#E3443B')
+				.setDescription(`The next CB has not been set up!`);
+			interaction.reply({embeds:[noConfigEmbed]});
 			return;
 		}
 		//read the database
@@ -31,7 +35,10 @@ module.exports = {
 				let timeDiff = currentTime.getTime() - startCB.getTime();
 				let dayDiff = Math.floor(timeDiff / (1000 * 3600 * 24));
 				dayDiff += 1;
-				interaction.reply(`Today's date is ${formattedDate} (Day ${dayDiff} of CB)`);
+				const todayEmbed = new MessageEmbed()
+					.setColor('#E3443B')
+					.setDescription(`Today's date is ${formattedDate} (Day ${dayDiff} of CB)`);
+				interaction.reply({embeds:[todayEmbed]});
 				break;
 			}
 		}

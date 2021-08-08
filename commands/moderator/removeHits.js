@@ -1,4 +1,5 @@
 const fs = require('fs');
+const { MessageEmbed } = require('discord.js');
 
 module.exports = {
 	name: 'removehits',
@@ -11,7 +12,10 @@ module.exports = {
 			//check that the database exists
 			if(!fs.existsSync(`./config.json`)){
 				console.log('No config file found');
-				interaction.reply(`No config for this server, ask a mod to set the start and end of a CB!`);
+				const noConfigEmbed = new MessageEmbed()
+					.setColor('#E3443B')
+					.setDescription(`No config for this server, ask a mod to set the start and end of a CB!`);
+				interaction.reply({embeds:[noConfigEmbed]});
 			}
 			else{
 				//read the database
@@ -21,7 +25,10 @@ module.exports = {
 					if(configJSON.servers[cfg].id == interaction.guild.id){
 						if(!fs.existsSync(`./databases/${configJSON.servers[cfg].startCB}${interaction.guild.id}${configJSON.servers[cfg].endCB}.json`)){
 							console.log('No database file found');
-							interaction.reply(`No database has been made for this server, try hitting the boss!`);
+							const noDatabaseEmbed = new MessageEmbed()
+								.setColor('#E3443B')
+								.setDescription(`No database has been made for this server, try hitting the boss!`);
+							interaction.reply({embeds:[noDatabaseEmbed]});
 							return;
 						}
 						else{
@@ -33,19 +40,28 @@ module.exports = {
 									dataJSON.users[i].hits = 0;
 									let dataSave = JSON.stringify(dataJSON);
 									fs.writeFileSync(`./databases/${configJSON.servers[cfg].startCB}${interaction.guild.id}${configJSON.servers[cfg].endCB}.json`,dataSave);
-									interaction.reply(`${dataJSON.users[i].name} has had their hits set to 0!`);
+									const removeEmbed = new MessageEmbed()
+										.setColor('#E3443B')
+										.setDescription(`${dataJSON.users[i].name} has had their hits set to 0!`);
+									interaction.reply({embeds:[removeEmbed]});
 									return;
 								}
 							}
-							
-							interaction.reply(`The user with ID ${selectedUser} does not exist in the database!`);
+							const noUserEmbed = new MessageEmbed()
+								.setColor('#E3443B')
+								.setDescription(`The user with ID ${selectedUser} does not exist in the database!`);
+							interaction.reply({embeds:[noUserEmbed]});
+							return;
 						}
 					}
 				}
 			}
 		}
 		else{
-			interaction.reply(`You do not have permission to use that command!`);
+			const noPermissionEmbed = new MessageEmbed()
+				.setColor('#E3443B')
+				.setDescription(`You do not have permission to use that command!`);
+			interaction.reply({embeds:[noPermissionEmbed]});
 		}
 	}
 };

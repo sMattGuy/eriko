@@ -1,4 +1,5 @@
 const fs = require('fs');
+const { MessageEmbed } = require('discord.js');
 
 module.exports = {
 	name: 'nextcb',
@@ -8,7 +9,10 @@ module.exports = {
 		//check that the database exists
 		if(!fs.existsSync(`./config.json`)){
 			console.log('No config file found');
-			interaction.reply(`The next CB has not been set up!`);
+			const noConfigEmbed = new MessageEmbed()
+				.setColor('#E3443B')
+				.setDescription(`The next CB has not been set up!`);
+			interaction.reply({embeds:[noConfigEmbed]});
 		}
 		else{
 			let currentTime = new Date();
@@ -23,13 +27,17 @@ module.exports = {
 					let timeDiff = startCB.getTime() - currentTime.getTime();
 					let dayDiff = Math.floor(timeDiff / (1000 * 3600 * 24));
 					dayDiff += 1;
-					
+					let dayResult = 'error';
 					if(dayDiff < 0){
-						interaction.reply(`There is currently an active Clan Battle!`);
+						dayResult = `There is currently an active Clan Battle!`;
 					}
 					else{
-						interaction.reply(`The next Clan Battle is in ${dayDiff} days!`);
+						dayResult = `The next Clan Battle is in ${dayDiff} days!`;
 					}
+					const nextCBEmbed = new MessageEmbed()
+						.setColor('#E3443B')
+						.setDescription(dayResult);
+					interaction.reply({embeds:[nextCBEmbed]});
 					break;
 				}
 			}

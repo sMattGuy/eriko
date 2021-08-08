@@ -1,4 +1,5 @@
 const fs = require('fs');
+const { MessageEmbed } = require('discord.js');
 
 module.exports = {
 	name: 'endcb',
@@ -8,7 +9,10 @@ module.exports = {
 			//pull the final date part into a separate variable
 			let selectedDate = interaction.options.getString('date');
 			if(selectedDate.length != 8){
-				interaction.reply(`Make sure your date is in MMDDYYYY format!`);
+				const invalidFormatEmbed = new MessageEmbed()
+					.setColor('#E3443B')
+					.setDescription(`Make sure your date is in MMDDYYYY format!`);
+				interaction.reply({embeds:[invalidFormatEmbed]});
 				return;
 			}
 			console.log(interaction.user.username + ' is setting the CB end for ' + selectedDate);
@@ -35,7 +39,10 @@ module.exports = {
 					console.log(endCB);
 					
 					if(endCB.getTime() - startCB.getTime() < 0){
-						interaction.reply(`End time cannot be before the start time!`);
+						const invalidEndTime = new MessageEmbed()
+							.setColor('#E3443B')
+							.setDescription(`End time cannot be before the start time!`);
+						interaction.reply({embeds:[invalidEndTime]});
 						return;
 					}
 					
@@ -54,11 +61,16 @@ module.exports = {
 			//writes to database
 			let configSave = JSON.stringify(configJSON);
 			fs.writeFileSync(`./config.json`,configSave);
-			
-			interaction.reply(`The CB end date has been set to ${selectedDate}`);
+			const setEndEmbed = new MessageEmbed()
+				.setColor('#E3443B')
+				.setDescription(`The CB end date has been set to ${selectedDate}`);
+			interaction.reply({embeds:[setEndEmbed]});
 		}
 		else{
-			interaction.reply(`You do not have permission to use that command!`);
+			const noPermissionEmbed = new MessageEmbed()
+				.setColor('#E3443B')
+				.setDescription(`You do not have permission to use that command!`);
+			interaction.reply({embeds:[noPermissionEmbed]});
 		}
 	}
 };

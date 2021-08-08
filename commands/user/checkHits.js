@@ -1,4 +1,5 @@
 const fs = require('fs');
+const { MessageEmbed, Formatters } = require('discord.js');
 
 module.exports = {
 	name: 'checkhits',
@@ -10,7 +11,10 @@ module.exports = {
 		let totalHits = 0;
 		if(!fs.existsSync(`./config.json`)){
 			console.log('No config file found');
-			interaction.reply(`The next CB has not been set up!`);
+			const noConfigEmbed = new MessageEmbed()
+				.setColor('#E3443B')
+				.setDescription(`The next CB has not been set up!`);
+			interaction.reply({embeds:[noConfigEmbed]});
 			return;
 		}
 		let configRead = fs.readFileSync(`./config.json`);
@@ -20,7 +24,10 @@ module.exports = {
 				//check that the database exists
 				if(!fs.existsSync(`./databases/${configJSON.servers[cfg].startCB}${interaction.guild.id}${configJSON.servers[cfg].endCB}.json`)){
 					console.log('No database file found');
-					interaction.reply(`No hits have been recorded!`);
+					const noDatabaseEmbed = new MessageEmbed()
+						.setColor('#E3443B')
+						.setDescription(`No hits have been recorded`);
+					interaction.reply({embeds:[noDatabaseEmbed]});
 					return;
 				}
 				else{
@@ -63,13 +70,17 @@ module.exports = {
 						}
 					}
 					messageToSend += `Total for ${selectedDate} : ${totalHits}`;
+					messageToSend = Formatters.codeBlock(messageToSend);
 					//send message as a code block
-					interaction.reply(messageToSend,{'code':true});
+					interaction.reply(messageToSend);
 					return;
 				}
 				break;
 			}
 		}
-		interaction.reply(`Configuration for this server has not been set up!`);
+		const noConfigEmbed = new MessageEmbed()
+			.setColor('#E3443B')
+			.setDescription(`Configuration for this server has not been set up!`);
+		interaction.reply({embeds:[noConfigEmbed]});
 	}
 };

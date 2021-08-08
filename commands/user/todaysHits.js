@@ -1,4 +1,5 @@
 const fs = require('fs');
+const { MessageEmbed, Formatters } = require('discord.js');
 
 module.exports = {
 	name: 'checktodayshits',
@@ -8,7 +9,10 @@ module.exports = {
 		console.log(interaction.user.username + ' is checking todays hits');
 		if(!fs.existsSync(`./config.json`)){
 			console.log('no config file found');
-			interaction.reply(`No dates have been created for the CB!`);
+			const noConfigEmbed = new MessageEmbed()
+				.setColor('#E3443B')
+				.setDescription(`The next CB has not been set up!`);
+			interaction.reply({embeds:[noConfigEmbed]});
 			return;
 		}
 		let configRead = fs.readFileSync(`./config.json`);
@@ -18,7 +22,10 @@ module.exports = {
 				if(!fs.existsSync(`./databases/${configJSON.servers[cfg].startCB}${interaction.guild.id}${configJSON.servers[cfg].endCB}.json`)){
 					//if the file doesn't exist, do nothing and report it to console
 					console.log('No database file found');
-					interaction.reply(`No hits have been recorded`);
+					const noDatabaseEmbed = new MessageEmbed()
+						.setColor('#E3443B')
+						.setDescription(`No hits have been recorded`);
+					interaction.reply({embeds:[noDatabaseEmbed]});
 				}
 				else{
 					let currentTime = new Date();
@@ -46,8 +53,9 @@ module.exports = {
 						messageToSend += `${dataJSON.users[i].name} : ${dataJSON.users[i].hits}\n`;
 					}
 					messageToSend += `Total for today : ${totalHits}\n${hourDiff}:${minDiff} left today`;
+					messageToSend = Formatters.codeBlock(messageToSend);
 					//send resulting message to chat, as a code block for mono space font
-					interaction.reply(messageToSend,{'code':true});
+					interaction.reply(messageToSend);
 				}
 				break;
 			}

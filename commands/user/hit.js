@@ -1,4 +1,6 @@
 const fs = require('fs');
+const { MessageEmbed } = require('discord.js');
+
 const MAXHITS = 3;
 
 module.exports = {
@@ -10,12 +12,18 @@ module.exports = {
 		//possible update would be to somehow include a way of verifying interactions
 		let hitAmount = interaction.options.getInteger('hits');
 		if(hitAmount > 3 || hitAmount <= 0){
-			interaction.reply(`You can only hit the boss 1 to 3 times!`);
+			const invalidHitsEmbed = new MessageEmbed()
+				.setColor('#E3443B')
+				.setDescription(`You can only hit the boss 1 to 3 times!`);
+			interaction.reply({embeds:[invalidHitsEmbed]});
 			return;
 		}
 		console.log(interaction.user.username + ' is hitting the boss');
 		if(!fs.existsSync(`./config.json`)){
-			interaction.reply(`A moderator has not yet set up the beginning and end of the Clan Battle!`);
+			const noConfigEmbed = new MessageEmbed()
+				.setColor('#E3443B')
+				.setDescription(`A moderator has not yet set up the beginning and end of the Clan Battle!`);
+			interaction.reply({embeds:[noConfigEmbed]});
 			return;
 		}
 		let configRead = fs.readFileSync(`./config.json`);
@@ -36,13 +44,19 @@ module.exports = {
 				let dayDiff = Math.floor(timeDiff / (1000 * 3600 * 24));
 				
 				if(dayDiff > 0){
-					interaction.reply(`The next Clan Battle is in ${dayDiff} days!`);
+					const invalidStartEmbed = new MessageEmbed()
+						.setColor('#E3443B')
+						.setDescription(`The next Clan Battle is in ${dayDiff} days!`);
+					interaction.reply({embeds:[invalidStartEmbed]});
 					return;
 				}
 				timeDiff = endCB.getTime() - currentTime.getTime();
 				dayDiff = Math.floor(timeDiff / (1000 * 3600 * 24));
 				if(dayDiff <= 0){
-					interaction.reply(`The clan battle has already passed!`);
+					const invalidEndEmbed = new MessageEmbed()
+						.setColor('#E3443B')
+						.setDescription(`The clan battle has already passed!`);
+					interaction.reply({embeds:[invalidEndEmbed]});
 					return;
 				}
 				
@@ -69,18 +83,27 @@ module.exports = {
 						//check to see if the user has already done their 3 hits for today
 						if(dataJSON.users[i].hits == MAXHITS){
 							console.log(interaction.user.username + ' has hit the max times day');
-							interaction.reply(`You have already hit ${MAXHITS} times today!`);
+							const maxHitsEmbed = new MessageEmbed()
+								.setColor('#E3443B')
+								.setDescription(`You have already hit ${MAXHITS} times today!`);
+							interaction.reply({embeds:[maxHitsEmbed]});
 							return;
 						}
 						else if(dataJSON.users[i].hits + hitAmount > MAXHITS){
-							interaction.reply(`Invalid amount entered! You already recorded ${dataJSON.users[i].hits} hit(s) today, ${hitAmount} puts you over ${MAXHITS} hits!`);
+							const overMaxHitsEmbed = new MessageEmbed()
+								.setColor('#E3443B')
+								.setDescription(`Invalid amount entered! You already recorded ${dataJSON.users[i].hits} hit(s) today, ${hitAmount} puts you over ${MAXHITS} hits!`);
+							interaction.reply({embeds:[overMaxHitsEmbed]});
 							return;
 						}
 						else{
 							//increase the users daily hits
 							dataJSON.users[i].hits += hitAmount;
 							//alerts user
-							interaction.reply(`You have hit the boss ${dataJSON.users[i].hits} time(s) today`);
+							const hitsEmbed = new MessageEmbed()
+								.setColor('#E3443B')
+								.setDescription(`You have hit the boss ${dataJSON.users[i].hits} time(s) today`);
+							interaction.reply({embeds:[hitsEmbed]});
 							//updates database file
 							let dataSave = JSON.stringify(dataJSON);
 							fs.writeFileSync(`./databases/${configJSON.servers[cfg].startCB}${interaction.guild.id}${configJSON.servers[cfg].endCB}.json`,dataSave);
@@ -92,27 +115,26 @@ module.exports = {
 				//new entry 
 				if(!userFound){
 					//this user object should be changed in the event that a new addition is made to the bot
-					if(hitAmount > MAXHITS){
-						//if they enter more than MAXHITS 
-						interaction.reply(`Invalid amount entered! You already recorded 0 hit(s) today, ${hitAmount} puts you over ${MAXHITS} hits!`);
-						return;
-					}
-					else{
-						//simply tacking it on to the end should be fine
-						let newUser = {'id':hitUser,'name':hitUserName,'hits':hitAmount,'total':[]};
-						//update user file
-						dataJSON.users.push(newUser);
-						//write it all to the database
-						let dataSave = JSON.stringify(dataJSON);
-						fs.writeFileSync(`./databases/${configJSON.servers[cfg].startCB}${interaction.guild.id}${configJSON.servers[cfg].endCB}.json`,dataSave);
-						//alert the user
-						interaction.reply(`You have hit the boss ${hitAmount} time(s) today!`);
-						return;
-					}
+					//simply tacking it on to the end should be fine
+					let newUser = {'id':hitUser,'name':hitUserName,'hits':hitAmount,'total':[]};
+					//update user file
+					dataJSON.users.push(newUser);
+					//write it all to the database
+					let dataSave = JSON.stringify(dataJSON);
+					fs.writeFileSync(`./databases/${configJSON.servers[cfg].startCB}${interaction.guild.id}${configJSON.servers[cfg].endCB}.json`,dataSave);
+					//alert the user
+					const hitsEmbed = new MessageEmbed()
+						.setColor('#E3443B')
+						.setDescription(`You have hit the boss ${hitAmount} time(s) today!`);
+					interaction.reply({embeds:[hitsEmbed]});
+					return;
 				}
 				break;
 			}
 		}
-		interaction.reply(`Database file does not exist`);
+		const noDatabaseEmbed = new MessageEmbed()
+			.setColor('#E3443B')
+			.setDescription(`Database file does not exist`);
+		interaction.reply({embeds:[noDatabaseEmbed]});
 	}
 };

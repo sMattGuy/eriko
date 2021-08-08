@@ -1,4 +1,5 @@
 const fs = require('fs');
+const { MessageEmbed } = require('discord.js');
 
 module.exports = {
 	name: 'startcb',
@@ -8,7 +9,10 @@ module.exports = {
 			//pull the final date part into a separate variable
 			let selectedDate = interaction.options.getString('date');
 			if(selectedDate.length != 8){
-				interaction.reply(`Make sure your date is in MMDDYYYY format!`);
+				const invalidFormatEmbed = new MessageEmbed()
+					.setColor('#E3443B')
+					.setDescription(`Make sure your date is in MMDDYYYY format!`);
+				interaction.reply({embeds:[invalidFormatEmbed]});
 				return;
 			}
 			console.log(interaction.user.username + ' is setting the CB start for ' + selectedDate);
@@ -41,10 +45,16 @@ module.exports = {
 			//writes to database
 			let configSave = JSON.stringify(configJSON);
 			fs.writeFileSync(`./config.json`,configSave);
-			interaction.reply(`The CB start date has been set to ${selectedDate}`);
+			const setStartEmbed = new MessageEmbed()
+				.setColor('#E3443B')
+				.setDescription(`The CB start date has been set to ${selectedDate}`);
+			interaction.reply({embeds:[setStartEmbed]});
 		}
 		else{
-			interaction.reply(`You do not have permission to use this command!`);
+			const noPermissionEmbed = new MessageEmbed()
+				.setColor('#E3443B')
+				.setDescription(`You do not have permission to use this command!`);
+			interaction.reply({embeds:[noPermissionEmbed]});
 		}
 	}
 };
