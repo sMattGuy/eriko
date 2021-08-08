@@ -70,9 +70,11 @@ module.exports = {
 						if(dataJSON.users[i].hits == MAXHITS){
 							console.log(interaction.user.username + ' has hit the max times day');
 							interaction.reply(`You have already hit ${MAXHITS} times today!`);
+							return;
 						}
 						else if(dataJSON.users[i].hits + hitAmount > MAXHITS){
 							interaction.reply(`Invalid amount entered! You already recorded ${dataJSON.users[i].hits} hit(s) today, ${hitAmount} puts you over ${MAXHITS} hits!`);
+							return;
 						}
 						else{
 							//increase the users daily hits
@@ -82,6 +84,7 @@ module.exports = {
 							//updates database file
 							let dataSave = JSON.stringify(dataJSON);
 							fs.writeFileSync(`./databases/${configJSON.servers[cfg].startCB}${interaction.guild.id}${configJSON.servers[cfg].endCB}.json`,dataSave);
+							return;
 						}
 						break;
 					}
@@ -92,6 +95,7 @@ module.exports = {
 					if(hitAmount > MAXHITS){
 						//if they enter more than MAXHITS 
 						interaction.reply(`Invalid amount entered! You already recorded 0 hit(s) today, ${hitAmount} puts you over ${MAXHITS} hits!`);
+						return;
 					}
 					else{
 						//simply tacking it on to the end should be fine
@@ -103,6 +107,7 @@ module.exports = {
 						fs.writeFileSync(`./databases/${configJSON.servers[cfg].startCB}${interaction.guild.id}${configJSON.servers[cfg].endCB}.json`,dataSave);
 						//alert the user
 						interaction.reply(`You have hit the boss ${hitAmount} time(s) today!`);
+						return;
 					}
 				}
 				break;
