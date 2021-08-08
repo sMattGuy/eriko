@@ -39,9 +39,7 @@ client.on('ready', () => {
 });
 
 client.on('messageCreate', async message => {
-	if (!client.application?.owner) await client.application?.fetch();
-
-	if (message.content.toLowerCase() === '!eriko deploy' && message.author.id === client.application?.owner.id) {
+	if (message.content.toLowerCase() === '!eriko deploy' && message.author.id == '492850107038040095') {
 		console.log('deploying commands');
 		const data = [
 		{
