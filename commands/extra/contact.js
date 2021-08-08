@@ -5,8 +5,8 @@ const MAXHITS = 3
 module.exports = {
 	name: 'contact',
 	description: 'gets my contact',
-	execute(client,message){
-		console.log(message.author.username + ' is checking contact');
-		message.channel.send(`MattGuy#4376 -> I make bot send feedback here`);
+	execute(interaction){
+		console.log(interaction.user.username + ' is checking contact');
+		interaction.reply(`MattGuy#4376 -> I make bot send feedback here`);
 	}
 };

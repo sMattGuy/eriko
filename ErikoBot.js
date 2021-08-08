@@ -1,16 +1,16 @@
 'use strict';
 // Import the discord.js module and others
-const Discord = require('discord.js');
+const { Client, Intents, Collection } = require('discord.js');
 const fs = require('fs');
 // Create an instance of a Discord client
-const client = new Discord.Client();
+const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.DIRECT_MESSAGES] });
 // import token and database
 const credentials = require('./auth.json');
 
 //external variable that determines if the database has been reset today
 let dayHasPassed = false;
 
-client.commands = new Discord.Collection();
+client.commands = new Collection();
 
 const commandFolders = fs.readdirSync('./commands');
 
@@ -21,8 +21,6 @@ for(const folder of commandFolders){
 		client.commands.set(command.name,command);
 	}
 }
-
-const prefix = '!eriko';
 
 //sets ready presence
 client.on('ready', () => {
@@ -39,23 +37,86 @@ client.on('ready', () => {
 	});
 	console.log('I am ready!');
 });
-// Create an event listener for messages
-client.on('message', message => {
-	//refreshes presence on bot
-	client.user.setPresence({
-		status: 'online',
-		activity: {
-			name: 'for !eriko help',
-			type: "WATCHING"
-		}
-	});
-	//checks for new day of clan battles
-	let currentTime = new Date();	// this will update every time there is a message emitted, essentially working as a time of message
-	
-	//record the time of a command for debugging
-	if(message.content.startsWith(prefix)){
-		console.log(currentTime.getHours() + ':' + currentTime.getMinutes() + ' ' + (currentTime.getMonth()+1) + '/' + currentTime.getDate() + '/' + currentTime.getFullYear());
+
+client.on('messageCreate', async message => {
+	if (!client.application?.owner) await client.application?.fetch();
+
+	if (message.content.toLowerCase() === '!eriko deploy' && message.author.id === client.application?.owner.id) {
+		const data = [
+		{
+			name: 'contact',
+			description: 'Gives you my contact information!',
+		},
+		{
+			name: 'removehits',
+			description: 'Removes a users hits for today',
+			options: [{
+				name: 'id',
+				type: 'STRING',
+				description: 'The users ID',
+				required: true,
+			}],
+		},
+		{
+			name: 'startcb',
+			description: 'Sets the start date for a Clan Battle',
+			options: [{
+				name: 'date',
+				type: 'STRING',
+				description: 'The start date in MMDDYYYY format',
+				required: true,
+			}],
+		},
+		{
+			name: 'endcb',
+			description: 'Sets the end date for a Clan Battle',
+			options: [{
+				name: 'date',
+				type: 'STRING',
+				description: 'The end date in MMDDYYYY format',
+				required: true,
+			}],
+		},
+		{
+			name: 'hit',
+			description: 'Records 1 to 3 hits for the day',
+			options: [{
+				name: 'hits',
+				type: 'INTEGER',
+				description: 'Enter 1, 2 or 3',
+				required: true,
+			}],
+		},
+		{
+			name: 'nextcb',
+			description: 'Shows how long until the next Clan Battle',
+		},
+		{
+			name: 'today',
+			description: 'Shows what today is in MMDDYYYY format',
+		},
+		{
+			name: 'checktodayshits',
+			description: 'Shows todays hits',
+		},
+		{
+			name: 'checkhits',
+			description: 'Shows the hits for a specific day',
+			options: [{
+				name: 'date',
+				type: 'STRING',
+				description: 'The MMDDYYYY/CB number',
+				required: true,
+			}],
+		},
+		];
+
+		const command = await client.guilds.cache.get(message.guildId)?.commands.set(data);
 	}
+});
+
+client.on('interactionCreate', async interaction => {
+	let currentTime = new Date();	// this will update every time there is a message emitted, essentially working as a time of message
 	
 	if(currentTime.getUTCHours() < 13 && !dayHasPassed){
 		//if the current time does not equal 13 UTC (9am EST) then it will reset the daily reset checker to false
@@ -112,26 +173,17 @@ client.on('message', message => {
 			}
 		}
 	}
-	
-	//start of user commands
-	if(!message.content.startsWith(prefix) || message.author.bot)
-		return;
-	
-	const args = message.content.slice(prefix.length).trim().split(/ +/);
-	const commandName = args.shift().toLowerCase();
-	
-	if(!client.commands.has(commandName))
-		return;
-	
-	const command = client.commands.get(commandName);
-	
-	try{
-		command.execute(client,message);
-	}
-	catch(error){
+	if (!interaction.isCommand()) return;
+
+	if (!client.commands.has(interaction.commandName)) return;
+
+	try {
+		await client.commands.get(interaction.commandName).execute(interaction);
+	} catch (error) {
 		console.error(error);
-		message.channel.send(`There was a problem executing that command!`);
+		await interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true });
 	}
 });
+
 // Log our bot in using the token from https://discord.com/developers/applications
 client.login(`${credentials.token}`);

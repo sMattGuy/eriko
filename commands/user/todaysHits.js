@@ -3,20 +3,22 @@ const fs = require('fs');
 module.exports = {
 	name: 'checktodayshits',
 	description: 'gets todays hits',
-	execute(client,message){
+	execute(interaction){
 		//display the all users hits for today
-		console.log(message.author.username + ' is checking todays hits');
+		console.log(interaction.user.username + ' is checking todays hits');
 		if(!fs.existsSync(`./config.json`)){
 			console.log('no config file found');
+			interaction.reply(`No dates have been created for the CB!`);
 			return;
 		}
 		let configRead = fs.readFileSync(`./config.json`);
 		let configJSON = JSON.parse(configRead);
 		for(let cfg=0;cfg<configJSON.servers.length;cfg++){
-			if(configJSON.servers[cfg].id == message.guild.id){
-				if(!fs.existsSync(`./databases/${configJSON.servers[cfg].startCB}${message.guild.id}${configJSON.servers[cfg].endCB}.json`)){
+			if(configJSON.servers[cfg].id == interaction.guild.id){
+				if(!fs.existsSync(`./databases/${configJSON.servers[cfg].startCB}${interaction.guild.id}${configJSON.servers[cfg].endCB}.json`)){
 					//if the file doesn't exist, do nothing and report it to console
 					console.log('No database file found');
+					interaction.reply(`No hits have been recorded`);
 				}
 				else{
 					let currentTime = new Date();
@@ -33,7 +35,7 @@ module.exports = {
 					let minDiff = Math.round(((msDiff % 86400000) % 3600000) / 60000);
 					
 					//read the file and parse it
-					let dataRead = fs.readFileSync(`./databases/${configJSON.servers[cfg].startCB}${message.guild.id}${configJSON.servers[cfg].endCB}.json`);
+					let dataRead = fs.readFileSync(`./databases/${configJSON.servers[cfg].startCB}${interaction.guild.id}${configJSON.servers[cfg].endCB}.json`);
 					let dataJSON = JSON.parse(dataRead);
 					//initialize the message with something, discord js crashes if an empty message is sent
 					let totalHits = 0;
@@ -45,7 +47,7 @@ module.exports = {
 					}
 					messageToSend += `Total for today : ${totalHits}\n${hourDiff}:${minDiff} left today`;
 					//send resulting message to chat, as a code block for mono space font
-					message.channel.send(messageToSend,{'code':true});
+					interaction.reply(messageToSend,{'code':true});
 				}
 				break;
 			}
