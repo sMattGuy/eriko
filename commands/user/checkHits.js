@@ -31,7 +31,7 @@ module.exports = {
 					console.log(startCB);
 					
 					let lookDate = '';
-					if(chop[2].length == 1){
+					if(selectedDate.length == 1){
 						//user is searching by CB day
 						lookDate = new Date();
 						lookDate.setDate(startCB.getDate() + parseInt(selectedDate) - 1);
