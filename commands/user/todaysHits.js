@@ -4,7 +4,7 @@ const { MessageEmbed, Formatters } = require('discord.js');
 module.exports = {
 	name: 'checktodayshits',
 	description: 'gets todays hits',
-	execute(interaction){
+	async execute(interaction){
 		//display the all users hits for today
 		console.log(interaction.user.username + ' is checking todays hits');
 		if(!fs.existsSync(`./config.json`)){
@@ -50,7 +50,7 @@ module.exports = {
 					for(let i=0;i<dataJSON.users.length;i++){
 						//go through all users and display their name plus how many hits they've done today
 						totalHits += dataJSON.users[i].hits;
-						let userNick = interaction.guild.members.cache.get(dataJSON.users[i].id).displayName;
+						let userNick = await interaction.guild.members.fetch(dataJSON.users[i].id).then(user => {return user.displayName});
 						messageToSend += `${userNick} : ${dataJSON.users[i].hits}\n`;
 					}
 					messageToSend += `Total for today : ${totalHits}\n${hourDiff}:${minDiff} left today`;

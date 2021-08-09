@@ -4,7 +4,7 @@ const { MessageEmbed } = require('discord.js');
 module.exports = {
 	name: 'today',
 	description: 'gets today',
-	execute(interaction){
+	async execute(interaction){
 		console.log(interaction.user.username + ' is checking today\'s date');
 		currentTime = new Date();
 		//this uses the same time conversion as above, so check there for the explanation on PrST

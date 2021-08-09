@@ -5,7 +5,7 @@ const MAXHITS = 3
 module.exports = {
 	name: 'contact',
 	description: 'gets my contact',
-	execute(interaction){
+	async execute(interaction){
 		console.log(interaction.user.username + ' is checking contact');
 		
 		const contactEmbed = new MessageEmbed()

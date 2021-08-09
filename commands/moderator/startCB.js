@@ -4,7 +4,7 @@ const { MessageEmbed } = require('discord.js');
 module.exports = {
 	name: 'startcb',
 	description: 'sets the start of a CB',
-	execute(interaction){
+	async execute(interaction){
 		if(interaction.member.roles.cache.has('815669639107051552') || interaction.member.roles.cache.has('815669643648827452') || interaction.member.roles.cache.has('872981028262801448') || interaction.guild.ownerId === interaction.user.id){
 			//pull the final date part into a separate variable
 			let selectedDate = interaction.options.getString('date');

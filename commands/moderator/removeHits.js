@@ -4,7 +4,7 @@ const { MessageEmbed } = require('discord.js');
 module.exports = {
 	name: 'removehits',
 	description: 'removes a users hits for that day',
-	execute(interaction){
+	async execute(interaction){
 		if(interaction.member.roles.cache.has('815669639107051552') || interaction.member.roles.cache.has('815669643648827452') || interaction.member.roles.cache.has('872981028262801448') || interaction.guild.ownerId === interaction.user.id){
 			//pull the final date part into a separate variable
 			let selectedUser = interaction.options.getString('id');
@@ -40,9 +40,10 @@ module.exports = {
 									dataJSON.users[i].hits = 0;
 									let dataSave = JSON.stringify(dataJSON);
 									fs.writeFileSync(`./databases/${configJSON.servers[cfg].startCB}${interaction.guild.id}${configJSON.servers[cfg].endCB}.json`,dataSave);
+									let userNick = await interaction.guild.members.fetch(dataJSON.users[i].id).then(user => {return user.displayName});
 									const removeEmbed = new MessageEmbed()
 										.setColor('#E3443B')
-										.setDescription(`${dataJSON.users[i].name} has had their hits set to 0!`);
+										.setDescription(`${userNick} has had their hits set to 0!`);
 									interaction.reply({embeds:[removeEmbed]});
 									return;
 								}

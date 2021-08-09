@@ -4,7 +4,7 @@ const { MessageEmbed, Formatters } = require('discord.js');
 module.exports = {
 	name: 'leaderboard',
 	description: 'shows everyones hits for the entire clan battle',
-	execute(interaction){
+	async execute(interaction){
 		console.log(interaction.user.username + ' is checking CB leaderboard');
 		if(!fs.existsSync(`./config.json`)){
 			console.log('No config file found');
@@ -42,7 +42,7 @@ module.exports = {
 							usersHits += dataJSON.users[i].total[j].hits;
 							totalHits += dataJSON.users[i].total[j].hits;
 						}
-						let userNick = interaction.guild.members.cache.get(dataJSON.users[i].id).displayName;
+						let userNick = await interaction.guild.members.fetch(dataJSON.users[i].id).then(user => {return user.displayName});
 						messageToSend += `${userNick} : ${usersHits}\n`;
 					}
 					messageToSend += `Total : ${totalHits}`;

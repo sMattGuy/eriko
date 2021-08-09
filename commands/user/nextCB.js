@@ -4,7 +4,7 @@ const { MessageEmbed } = require('discord.js');
 module.exports = {
 	name: 'nextcb',
 	description: 'gets the days left until the next CB',
-	execute(interaction){
+	async execute(interaction){
 		console.log(interaction.user.username + ' is checking start date of next cb');
 		//check that the database exists
 		if(!fs.existsSync(`./config.json`)){
@@ -28,7 +28,7 @@ module.exports = {
 					let dayDiff = Math.floor(timeDiff / (1000 * 3600 * 24));
 					dayDiff += 1;
 					let dayResult = 'error';
-					if(dayDiff < 0){
+					if(dayDiff <= 0){
 						dayResult = `There is currently an active Clan Battle!`;
 					}
 					else{

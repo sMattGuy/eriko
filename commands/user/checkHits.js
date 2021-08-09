@@ -4,7 +4,7 @@ const { MessageEmbed, Formatters } = require('discord.js');
 module.exports = {
 	name: 'checkhits',
 	description: 'check specific days hits',
-	execute(interaction){
+	async execute(interaction){
 		//pull the final date part into a separate variable
 		let selectedDate = interaction.options.getString('date');
 		console.log(interaction.user.username + ' is checking hits for ' + selectedDate);
@@ -64,7 +64,7 @@ module.exports = {
 							//if date is found using date code above, store it to the message
 							if(selectedDate == dataJSON.users[i].total[j].date){
 								totalHits += dataJSON.users[i].total[j].hits;
-								let userNick = interaction.guild.members.cache.get(dataJSON.users[i].id).displayName;
+								let userNick = await interaction.guild.members.fetch(dataJSON.users[i].id).then(user => {return user.displayName});
 								messageToSend += `${userNick} : ${dataJSON.users[i].total[j].hits}\n`;
 								break;
 							}
