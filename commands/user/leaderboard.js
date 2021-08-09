@@ -1,5 +1,5 @@
 const fs = require('fs');
-const { MessageEmbed } = require('discord.js');
+const { MessageEmbed, Formatters } = require('discord.js');
 
 module.exports = {
 	name: 'leaderboard',
