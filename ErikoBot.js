@@ -23,16 +23,12 @@ for(const folder of commandFolders){
 }
 
 //sets ready presence
-client.on('ready', () => {
+client.on('ready', async () => {
 	client.user.setPresence({
-		status: 'online',
-		activity: {
-			name: 'for !eriko help',
-			type: "WATCHING"
-		}
+		status: 'online'
 	});
 	//list server in console
-	client.guilds.cache.forEach(guild => {
+	client.guilds.cache.forEach(async guild => {
 		console.log(`${guild.name} | ${guild.id}`);
 	});
 	console.log('I am ready!');
@@ -143,6 +139,20 @@ client.on('messageCreate', async message => {
 				type: 'INTEGER',
 				description: 'Enter 1, 2 or 3. This adds to your current hits',
 				required: true,
+				choices:[
+					{
+						name:'1',
+						value:1
+					},
+					{
+						name:'2',
+						value:2
+					},
+					{
+						name:'3',
+						value:3
+					},
+				]
 			}],
 		},
 		{
@@ -174,6 +184,86 @@ client.on('messageCreate', async message => {
 		];
 
 		const command = await client.guilds.cache.get(message.guildId)?.commands.set(data);
+	}
+	if (message.content.toLowerCase() === '!eriko perms' && message.author.id == '492850107038040095') {
+		const fullPermissions = [
+			{
+				id:"873802201179516959",			//remove hits
+				permissions:[
+					{
+						id:"815669639107051552",
+						type: 'ROLE',
+						permission: true
+					},
+					{
+						id:"815669643648827452",
+						type: 'ROLE',
+						permission: true
+					},
+					{
+						id:"872981028262801448",
+						type: 'ROLE',
+						permission: true
+					},
+					{
+						id: '492850107038040095',
+						type: 'USER',
+						permission: true,
+					}
+				]
+			},
+			{
+				id:"873802201179516960",		//start cb
+				permissions:[
+					{
+						id:"815669639107051552",
+						type: 'ROLE',
+						permission: true
+					},
+					{
+						id:"815669643648827452",
+						type: 'ROLE',
+						permission: true
+					},
+					{
+						id:"872981028262801448",
+						type: 'ROLE',
+						permission: true
+					},
+					{
+						id: '492850107038040095',
+						type: 'USER',
+						permission: true,
+					}
+				]
+			},
+			{
+				id:"873802201179516961",			//end cb
+				permissions:[
+					{
+						id:"815669639107051552",
+						type: 'ROLE',
+						permission: true
+					},
+					{
+						id:"815669643648827452",
+						type: 'ROLE',
+						permission: true
+					},
+					{
+						id:"872981028262801448",
+						type: 'ROLE',
+						permission: true
+					},
+					{
+						id: '492850107038040095',
+						type: 'USER',
+						permission: true,
+					}
+				]
+			},
+		];
+		await client.guilds.cache.get(message.guildId)?.commands.permissions.set({ fullPermissions });
 	}
 });
 
