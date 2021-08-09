@@ -37,13 +37,42 @@ module.exports = {
 					//do numbers magic to figure out date diffs
 					let startCB = new Date(`${configJSON.servers[cfg].startCB.substring(0,2)}/${configJSON.servers[cfg].startCB.substring(2,4)}/${configJSON.servers[cfg].startCB.substring(4,8)}`);
 					console.log(startCB);
+					let endCB = new Date(`${configJSON.servers[cfg].endCB.substring(0,2)}/${configJSON.servers[cfg].endCB.substring(2,4)}/${configJSON.servers[cfg].endCB.substring(4,8)}`);
 					
 					let lookDate = '';
-					if(selectedDate.length == 1){
+					if(selectedDate.length >= 1 && selectedDate.length < 8){
+						if(selectedDate <= 0){
+							const beforeStartErrorEmbed = new MessageEmbed()
+								.setColor('#E3443B')
+								.setDescription(`There is no data from before the Clan Battle started!`);
+							interaction.reply({embeds:[beforeStartErrorEmbed]});
+							return;
+						}
 						//user is searching by CB day
 						lookDate = new Date();
 						lookDate.setDate(startCB.getDate() + parseInt(selectedDate) - 1);
-						
+						if(lookDate > endCB){
+							const afterEndErrorEmbed = new MessageEmbed()
+								.setColor('#E3443B')
+								.setDescription(`There is no data for after the Clan Battle has ended!`);
+							interaction.reply({embeds:[afterEndErrorEmbed]});
+							return;
+						}
+						let currentTime = new Date();
+						if(lookDate > currentTime){
+							const futureDataErrorEmbed = new MessageEmbed()
+								.setColor('#E3443B')
+								.setDescription(`There is no data for the future yet!`);
+							interaction.reply({embeds:[futureDataErrorEmbed]});
+							return;
+						}
+						if((lookDate.getFullYear() == currentTime.getFullYear())&&(lookDate.getMonth() == currentTime.getMonth())&&(lookDate.getDate() == currentTime.getDate())){
+							const todayCheckErrorEmbed = new MessageEmbed()
+								.setColor('#E3443B')
+								.setDescription(`Use /checktodayshits instead!`);
+							interaction.reply({embeds:[todayCheckErrorEmbed]});
+							return;
+						}
 						let recordMonth = ('0' + (lookDate.getUTCMonth()+1)).slice(-2);
 						let recordDay = ('0' + lookDate.getUTCDate()).slice(-2);
 						selectedDate = "" + recordMonth + recordDay + lookDate.getUTCFullYear();
@@ -51,6 +80,35 @@ module.exports = {
 					else{
 						//user is searching by MMDDYYYY
 						lookDate = new Date(`${selectedDate.substring(0,2)}/${selectedDate.substring(2,4)}/${selectedDate.substring(4,8)}`);
+						if(lookDate < startCB){
+							const beforeStartErrorEmbed = new MessageEmbed()
+								.setColor('#E3443B')
+								.setDescription(`There is no data from before the Clan Battle started!`);
+							interaction.reply({embeds:[beforeStartErrorEmbed]});
+							return;
+						}
+						if(lookDate > endCB){
+							const afterEndErrorEmbed = new MessageEmbed()
+								.setColor('#E3443B')
+								.setDescription(`There is no data for after the Clan Battle has ended!`);
+							interaction.reply({embeds:[afterEndErrorEmbed]});
+							return;
+						}
+						let currentTime = new Date();
+						if(lookDate > currentTime){
+							const futureDataErrorEmbed = new MessageEmbed()
+								.setColor('#E3443B')
+								.setDescription(`There is no data for the future yet!`);
+							interaction.reply({embeds:[futureDataErrorEmbed]});
+							return;
+						}
+						if((lookDate.getFullYear() == currentTime.getFullYear())&&(lookDate.getMonth() == currentTime.getMonth())&&(lookDate.getDate() == currentTime.getDate())){
+							const todayCheckErrorEmbed = new MessageEmbed()
+								.setColor('#E3443B')
+								.setDescription(`Use /checktodayshits instead!`);
+							interaction.reply({embeds:[todayCheckErrorEmbed]});
+							return;
+						}
 					}
 					
 					let timeDiff = lookDate.getTime() - startCB.getTime();
