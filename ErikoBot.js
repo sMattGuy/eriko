@@ -158,6 +158,10 @@ client.on('messageCreate', async message => {
 			description: 'Shows todays hits',
 		},
 		{
+			name: 'leaderboard',
+			description: 'Shows everyones hits for the entire Clan Battle',
+		},
+		{
 			name: 'checkhits',
 			description: 'Shows the hits for a specific day',
 			options: [{

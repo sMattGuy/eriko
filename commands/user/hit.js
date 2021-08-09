@@ -43,7 +43,7 @@ module.exports = {
 				let timeDiff = startCB.getTime() - currentTime.getTime();
 				let dayDiff = Math.floor(timeDiff / (1000 * 3600 * 24));
 				
-				if(dayDiff > 0){
+				if(dayDiff >= 0){
 					const invalidStartEmbed = new MessageEmbed()
 						.setColor('#E3443B')
 						.setDescription(`The next Clan Battle is in ${dayDiff} days!`);
