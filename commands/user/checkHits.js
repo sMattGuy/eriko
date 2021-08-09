@@ -64,7 +64,8 @@ module.exports = {
 							//if date is found using date code above, store it to the message
 							if(selectedDate == dataJSON.users[i].total[j].date){
 								totalHits += dataJSON.users[i].total[j].hits;
-								messageToSend += `${dataJSON.users[i].name} : ${dataJSON.users[i].total[j].hits}\n`;
+								let userNick = interaction.guild.members.cache.get(dataJSON.users[i].id).displayName;
+								messageToSend += `${userNick} : ${dataJSON.users[i].total[j].hits}\n`;
 								break;
 							}
 						}

@@ -42,7 +42,8 @@ module.exports = {
 							usersHits += dataJSON.users[i].total[j].hits;
 							totalHits += dataJSON.users[i].total[j].hits;
 						}
-						messageToSend += `${dataJSON.users[i].name} : ${usersHits}\n`;
+						let userNick = interaction.guild.members.cache.get(dataJSON.users[i].id).displayName;
+						messageToSend += `${userNick} : ${usersHits}\n`;
 					}
 					messageToSend += `Total : ${totalHits}`;
 					messageToSend = Formatters.codeBlock(messageToSend);

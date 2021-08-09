@@ -50,7 +50,8 @@ module.exports = {
 					for(let i=0;i<dataJSON.users.length;i++){
 						//go through all users and display their name plus how many hits they've done today
 						totalHits += dataJSON.users[i].hits;
-						messageToSend += `${dataJSON.users[i].name} : ${dataJSON.users[i].hits}\n`;
+						let userNick = interaction.guild.members.cache.get(dataJSON.users[i].id).displayName;
+						messageToSend += `${userNick} : ${dataJSON.users[i].hits}\n`;
 					}
 					messageToSend += `Total for today : ${totalHits}\n${hourDiff}:${minDiff} left today`;
 					messageToSend = Formatters.codeBlock(messageToSend);
