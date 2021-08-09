@@ -141,7 +141,7 @@ client.on('messageCreate', async message => {
 			options: [{
 				name: 'hits',
 				type: 'INTEGER',
-				description: 'Enter 1, 2 or 3',
+				description: 'Enter 1, 2 or 3. This adds to your current hits',
 				required: true,
 			}],
 		},
@@ -151,7 +151,7 @@ client.on('messageCreate', async message => {
 		},
 		{
 			name: 'today',
-			description: 'Shows what today is in MMDDYYYY format',
+			description: 'Shows what today is in MMDDYYYY format and what day of the CB it is',
 		},
 		{
 			name: 'checktodayshits',
