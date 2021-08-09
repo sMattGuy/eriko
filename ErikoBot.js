@@ -96,6 +96,9 @@ client.on('messageCreate', async message => {
 	
 	if (message.content.toLowerCase() === '!eriko deploy' && message.author.id == '492850107038040095') {
 		console.log('deploying commands');
+		
+		await client.guilds.cache.get(message.guildId).commands.set([]);
+		
 		const data = [
 		{
 			name: 'contact',
@@ -104,6 +107,7 @@ client.on('messageCreate', async message => {
 		{
 			name: 'removehits',
 			description: 'Removes a users hits for today',
+			defaultPermission: false,
 			options: [{
 				name: 'id',
 				type: 'STRING',
@@ -114,6 +118,7 @@ client.on('messageCreate', async message => {
 		{
 			name: 'startcb',
 			description: 'Sets the start date for a Clan Battle',
+			defaultPermission: false,
 			options: [{
 				name: 'date',
 				type: 'STRING',
@@ -124,6 +129,7 @@ client.on('messageCreate', async message => {
 		{
 			name: 'endcb',
 			description: 'Sets the end date for a Clan Battle',
+			defaultPermission: false,
 			options: [{
 				name: 'date',
 				type: 'STRING',
@@ -183,12 +189,14 @@ client.on('messageCreate', async message => {
 		},
 		];
 
-		const command = await client.guilds.cache.get(message.guildId)?.commands.set(data);
+		const command = await client.guilds.cache.get(message.guildId).commands.set(data);
+		console.log(command);
 	}
 	if (message.content.toLowerCase() === '!eriko perms' && message.author.id == '492850107038040095') {
+		console.log('updating perms');
 		const fullPermissions = [
 			{
-				id:"873802201179516959",			//remove hits
+				id:"874389396449816588",
 				permissions:[
 					{
 						id:"815669639107051552",
@@ -213,7 +221,7 @@ client.on('messageCreate', async message => {
 				]
 			},
 			{
-				id:"873802201179516960",		//start cb
+				id:"874389396886007848",
 				permissions:[
 					{
 						id:"815669639107051552",
@@ -230,15 +238,10 @@ client.on('messageCreate', async message => {
 						type: 'ROLE',
 						permission: true
 					},
-					{
-						id: '492850107038040095',
-						type: 'USER',
-						permission: true,
-					}
 				]
 			},
 			{
-				id:"873802201179516961",			//end cb
+				id:"874389396886007849",
 				permissions:[
 					{
 						id:"815669639107051552",
@@ -263,7 +266,8 @@ client.on('messageCreate', async message => {
 				]
 			},
 		];
-		await client.guilds.cache.get(message.guildId)?.commands.permissions.set({ fullPermissions });
+		console.log(await client.guilds.cache.get(message.guildId)?.commands.permissions.set({ fullPermissions }));
+		console.log('perms updated');
 	}
 });
 
