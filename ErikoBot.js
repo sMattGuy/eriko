@@ -38,20 +38,22 @@ client.on('ready', async () => {
 client.on('messageCreate', async message => {
 	//haha funny
 	if(messageMap.has(message.channel.id)){
-		if(messageMap.get(message.channel.id).content == message.content){
+		if(messageMap.get(message.channel.id).content == message.content && messageMap.get(message.channel.id).author != message.author.id){
 			let messUpdate = messageMap.get(message.channel.id);
-			let messUpdate.times += 1;
+			messUpdate.times += 1;
+			messUpdate.author = message.author.id;
+			messageMap.set(message.channel.id,messUpdate);
 			if(messUpdate.times == 3){
 				message.channel.send(messUpdate.content);
 				messageMap.delete(message.channel.id);
 			}
 		}
 		else{
-			messageMap.set(message.channel.id,{content:message.content,times:1});
+			messageMap.set(message.channel.id,{content:message.content,times:1,author:message.author.id});
 		}
 	}
 	else{
-		messageMap.set(message.channel.id,{content:message.content,times:1});
+		messageMap.set(message.channel.id,{content:message.content,times:1,author:message.author.id});
 	}
 	let currentTime = new Date();	// this will update every time there is a message emitted, essentially working as a time of message
 	
