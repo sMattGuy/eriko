@@ -13,6 +13,7 @@ let dayHasPassed = false;
 client.commands = new Collection();
 
 const commandFolders = fs.readdirSync('./commands');
+const messageMap = new Map();
 
 for(const folder of commandFolders){
 	const commandFiles = fs.readdirSync(`./commands/${folder}`).filter(file => file.endsWith(`.js`));
@@ -35,7 +36,23 @@ client.on('ready', async () => {
 });
 
 client.on('messageCreate', async message => {
-	
+	//haha funny
+	if(messageMap.has(message.channel.id)){
+		if(messageMap.get(message.channel.id).content == message.content){
+			let messUpdate = messageMap.get(message.channel.id);
+			let messUpdate.times += 1;
+			if(messUpdate.times == 3){
+				message.channel.send(messUpdate.content);
+				messageMap.delete(message.channel.id);
+			}
+		}
+		else{
+			messageMap.set(message.channel.id,{content:message.content,times:1});
+		}
+	}
+	else{
+		messageMap.set(message.channel.id,{content:message.content,times:1});
+	}
 	let currentTime = new Date();	// this will update every time there is a message emitted, essentially working as a time of message
 	
 	if(currentTime.getUTCHours() < 13 && !dayHasPassed){
