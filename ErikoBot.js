@@ -49,11 +49,13 @@ client.on('messageCreate', async message => {
 			}
 		}
 		else{
-			messageMap.set(message.channel.id,{content:message.content,times:1,author:message.author.id});
+			let newInput = {content:message.content,times:1,author:message.author.id};
+			messageMap.set(message.channel.id,newInput);
 		}
 	}
 	else{
-		messageMap.set(message.channel.id,{content:message.content,times:1,author:message.author.id});
+		let newInput = {content:message.content,times:1,author:message.author.id};
+		messageMap.set(message.channel.id,newInput);
 	}
 	let currentTime = new Date();	// this will update every time there is a message emitted, essentially working as a time of message
 	
