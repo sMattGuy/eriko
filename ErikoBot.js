@@ -37,25 +37,29 @@ client.on('ready', async () => {
 
 client.on('messageCreate', async message => {
 	//haha funny
-	if(messageMap.has(message.channel.id) && !message.author.bot && message.content.length != 0){
-		if(messageMap.get(message.channel.id).content == message.content){
-			//  && messageMap.get(message.channel.id).author != message.author.id
+	if(messageMap.has(message.channel.id) && !message.author.bot){
+		if(messageMap.get(message.channel.id).content == message.content && messageMap.get(message.channel.id).author != message.author.id){
 			let messUpdate = messageMap.get(message.channel.id);
 			messUpdate.times += 1;
 			messUpdate.author = message.author.id;
 			messageMap.set(message.channel.id,messUpdate);
 			if(messUpdate.times == 3){
-				message.channel.send(messUpdate.content);
+				if(messUpdate.content.length != 0){
+					message.channel.send(messUpdate.content);
+				}
+				else{
+					message.channel.send({stickers:messUpdate.sticker}).catch(() => {console.log('could not send sticker')});
+				}
 				messageMap.delete(message.channel.id);
 			}
 		}
 		else{
-			let newInput = {content:message.content,times:1,author:message.author.id};
+			let newInput = {content:message.content,times:1,author:message.author.id,sticker:message.stickers};
 			messageMap.set(message.channel.id,newInput);
 		}
 	}
 	else{
-		let newInput = {content:message.content,times:1,author:message.author.id};
+		let newInput = {content:message.content,times:1,author:message.author.id,sticker:message.stickers};
 		messageMap.set(message.channel.id,newInput);
 	}
 	let currentTime = new Date();	// this will update every time there is a message emitted, essentially working as a time of message
