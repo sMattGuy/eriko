@@ -5,6 +5,13 @@ module.exports = {
 	name: 'endcb',
 	description: 'sets the end date of a CB',
 	async execute(interaction){
+		if(!interaction.member.roles.cache.has('815669639107051552') && !interaction.member.roles.cache.has('815669643648827452') && !interaction.member.roles.cache.has('872981028262801448') && !interaction.guild.ownerId === interaction.user.id){
+			const invalidPermissions = new MessageEmbed()
+				.setColor('#E3443B')
+				.setDescription(`You do not have permission to use this command!`);
+			interaction.reply({embeds:[invalidPermissions]});
+			return;
+		}
 		//pull the final date part into a separate variable
 		let selectedDate = interaction.options.getString('date');
 		if(selectedDate.length != 8){
