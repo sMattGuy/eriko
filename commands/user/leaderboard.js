@@ -47,9 +47,8 @@ module.exports = {
 					}
 					messageToSend += `Total : ${totalHits}`;
 					messageToSend = Formatters.codeBlock(messageToSend);
-					console.log(messageToSend.length);
 					//send message as a code block
-					interaction.reply(messageToSend);
+					await interaction.reply(messageToSend);
 					return;
 				}
 			}
