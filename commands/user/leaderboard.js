@@ -45,15 +45,15 @@ module.exports = {
 						let userNick = await interaction.guild.members.fetch(dataJSON.users[i].id).then(user => {return user.displayName});
 						messageToSend += `${userNick} : ${usersHits}\n`;
 						if(messageToSend.length >= 2000){
-							interaction.channel.send(Formatters.codeBlock(messageToSend));
+							await interaction.channel.send(Formatters.codeBlock(messageToSend));
 							messageToSend = "";
 						}
 					}
 					messageToSend += `Total : ${totalHits}`;
 					messageToSend = Formatters.codeBlock(messageToSend);
 					//send message as a code block
-					interaction.channel.send(messageToSend);
-					interaction.reply('Leaderboard sent!');
+					await interaction.channel.send(messageToSend);
+					await interaction.reply('Leaderboard sent!');
 					return;
 				}
 			}
