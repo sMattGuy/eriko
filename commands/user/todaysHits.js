@@ -28,6 +28,8 @@ module.exports = {
 					interaction.reply({embeds:[noDatabaseEmbed]});
 				}
 				else{
+					let channel = interaction.channel;
+					interaction.reply('Getting todays hits together');
 					let currentTime = new Date();
 					let nextEnd = new Date();
 					console.log(currentTime);
@@ -56,7 +58,7 @@ module.exports = {
 					messageToSend += `Total for today : ${totalHits}\n${hourDiff}:${minDiff} left today`;
 					messageToSend = Formatters.codeBlock(messageToSend);
 					//send resulting message to chat, as a code block for mono space font
-					interaction.reply(messageToSend);
+					channel.send(messageToSend);
 				}
 				break;
 			}

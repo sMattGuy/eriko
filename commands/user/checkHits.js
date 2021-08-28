@@ -31,6 +31,8 @@ module.exports = {
 					return;
 				}
 				else{
+					let channel = interaction.channel;
+					interaction.reply('Getting hits together');
 					//read the database
 					let dataRead = fs.readFileSync(`./databases/${configJSON.servers[cfg].startCB}${interaction.guild.id}${configJSON.servers[cfg].endCB}.json`);
 					let dataJSON = JSON.parse(dataRead);
@@ -131,7 +133,7 @@ module.exports = {
 					messageToSend += `Total for ${selectedDate} : ${totalHits}`;
 					messageToSend = Formatters.codeBlock(messageToSend);
 					//send message as a code block
-					interaction.reply(messageToSend);
+					channel.send(messageToSend);
 					return;
 				}
 				break;
