@@ -16,6 +16,7 @@ module.exports = {
 		}
 		let configRead = fs.readFileSync(`./config.json`);
 		let configJSON = JSON.parse(configRead);
+		let channel = interaction.channel;
 		for(let cfg=0;cfg<configJSON.servers.length;cfg++){
 			if(configJSON.servers[cfg].id == interaction.guild.id){
 				//check that the database exists
@@ -28,6 +29,7 @@ module.exports = {
 					return;
 				}
 				else{
+					interaction.reply(`Getting the leaderboard ready!`);
 					//read the database
 					let dataRead = fs.readFileSync(`./databases/${configJSON.servers[cfg].startCB}${interaction.guild.id}${configJSON.servers[cfg].endCB}.json`);
 					let dataJSON = JSON.parse(dataRead);
@@ -47,8 +49,7 @@ module.exports = {
 					}
 					messageToSend += `Total : ${totalHits}`;
 					messageToSend = Formatters.codeBlock(messageToSend);
-					//send message as a code block
-					await interaction.reply(messageToSend);
+					channel.send(messageToSend);
 					return;
 				}
 			}
