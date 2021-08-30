@@ -29,7 +29,7 @@ module.exports = {
 				}
 				else{
 					let channel = interaction.channel;
-					await interaction.deferReply({ ephemeral: true });
+					await interaction.deferReply();
 					let currentTime = new Date();
 					let nextEnd = new Date();
 					console.log(currentTime);

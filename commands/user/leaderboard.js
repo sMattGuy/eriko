@@ -29,7 +29,7 @@ module.exports = {
 					return;
 				}
 				else{
-					await interaction.deferReply({ ephemeral: true });
+					await interaction.deferReply();
 					//read the database
 					let dataRead = fs.readFileSync(`./databases/${configJSON.servers[cfg].startCB}${interaction.guild.id}${configJSON.servers[cfg].endCB}.json`);
 					let dataJSON = JSON.parse(dataRead);
