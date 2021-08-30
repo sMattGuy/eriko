@@ -32,7 +32,7 @@ module.exports = {
 				}
 				else{
 					let channel = interaction.channel;
-					interaction.reply('Getting hits together');
+					await interaction.deferReply({ ephemeral: true });
 					//read the database
 					let dataRead = fs.readFileSync(`./databases/${configJSON.servers[cfg].startCB}${interaction.guild.id}${configJSON.servers[cfg].endCB}.json`);
 					let dataJSON = JSON.parse(dataRead);
@@ -47,7 +47,7 @@ module.exports = {
 							const beforeStartErrorEmbed = new MessageEmbed()
 								.setColor('#E3443B')
 								.setDescription(`There is no data from before the Clan Battle started!`);
-							interaction.reply({embeds:[beforeStartErrorEmbed]});
+							interaction.editReply({embeds:[beforeStartErrorEmbed]});
 							return;
 						}
 						//user is searching by CB day
@@ -57,7 +57,7 @@ module.exports = {
 							const afterEndErrorEmbed = new MessageEmbed()
 								.setColor('#E3443B')
 								.setDescription(`There is no data for after the Clan Battle has ended!`);
-							interaction.reply({embeds:[afterEndErrorEmbed]});
+							interaction.editReply({embeds:[afterEndErrorEmbed]});
 							return;
 						}
 						let currentTime = new Date();
@@ -65,14 +65,14 @@ module.exports = {
 							const futureDataErrorEmbed = new MessageEmbed()
 								.setColor('#E3443B')
 								.setDescription(`There is no data for the future yet!`);
-							interaction.reply({embeds:[futureDataErrorEmbed]});
+							interaction.editReply({embeds:[futureDataErrorEmbed]});
 							return;
 						}
 						if((lookDate.getFullYear() == currentTime.getFullYear())&&(lookDate.getMonth() == currentTime.getMonth())&&(lookDate.getDate() == currentTime.getDate())){
 							const todayCheckErrorEmbed = new MessageEmbed()
 								.setColor('#E3443B')
 								.setDescription(`Use /checktodayshits instead!`);
-							interaction.reply({embeds:[todayCheckErrorEmbed]});
+							interaction.editReply({embeds:[todayCheckErrorEmbed]});
 							return;
 						}
 						let recordMonth = ('0' + (lookDate.getUTCMonth()+1)).slice(-2);
@@ -86,14 +86,14 @@ module.exports = {
 							const beforeStartErrorEmbed = new MessageEmbed()
 								.setColor('#E3443B')
 								.setDescription(`There is no data from before the Clan Battle started!`);
-							interaction.reply({embeds:[beforeStartErrorEmbed]});
+							interaction.editReply({embeds:[beforeStartErrorEmbed]});
 							return;
 						}
 						if(lookDate > endCB){
 							const afterEndErrorEmbed = new MessageEmbed()
 								.setColor('#E3443B')
 								.setDescription(`There is no data for after the Clan Battle has ended!`);
-							interaction.reply({embeds:[afterEndErrorEmbed]});
+							interaction.editReply({embeds:[afterEndErrorEmbed]});
 							return;
 						}
 						let currentTime = new Date();
@@ -101,14 +101,14 @@ module.exports = {
 							const futureDataErrorEmbed = new MessageEmbed()
 								.setColor('#E3443B')
 								.setDescription(`There is no data for the future yet!`);
-							interaction.reply({embeds:[futureDataErrorEmbed]});
+							interaction.editReply({embeds:[futureDataErrorEmbed]});
 							return;
 						}
 						if((lookDate.getFullYear() == currentTime.getFullYear())&&(lookDate.getMonth() == currentTime.getMonth())&&(lookDate.getDate() == currentTime.getDate())){
 							const todayCheckErrorEmbed = new MessageEmbed()
 								.setColor('#E3443B')
 								.setDescription(`Use /checktodayshits instead!`);
-							interaction.reply({embeds:[todayCheckErrorEmbed]});
+							interaction.editReply({embeds:[todayCheckErrorEmbed]});
 							return;
 						}
 					}
@@ -133,7 +133,7 @@ module.exports = {
 					messageToSend += `Total for ${selectedDate} : ${totalHits}`;
 					messageToSend = Formatters.codeBlock(messageToSend);
 					//send message as a code block
-					channel.send(messageToSend);
+					interaction.editReply(messageToSend);
 					return;
 				}
 				break;

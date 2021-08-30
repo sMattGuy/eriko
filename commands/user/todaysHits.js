@@ -29,7 +29,7 @@ module.exports = {
 				}
 				else{
 					let channel = interaction.channel;
-					interaction.reply('Getting todays hits together');
+					await interaction.deferReply({ ephemeral: true });
 					let currentTime = new Date();
 					let nextEnd = new Date();
 					console.log(currentTime);
@@ -58,7 +58,7 @@ module.exports = {
 					messageToSend += `Total for today : ${totalHits}\n${hourDiff}:${minDiff} left today`;
 					messageToSend = Formatters.codeBlock(messageToSend);
 					//send resulting message to chat, as a code block for mono space font
-					channel.send(messageToSend);
+					interaction.editReply(messageToSend);
 				}
 				break;
 			}

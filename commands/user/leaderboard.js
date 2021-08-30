@@ -29,7 +29,7 @@ module.exports = {
 					return;
 				}
 				else{
-					interaction.reply(`Getting the leaderboard ready!`);
+					await interaction.deferReply({ ephemeral: true });
 					//read the database
 					let dataRead = fs.readFileSync(`./databases/${configJSON.servers[cfg].startCB}${interaction.guild.id}${configJSON.servers[cfg].endCB}.json`);
 					let dataJSON = JSON.parse(dataRead);
@@ -49,7 +49,7 @@ module.exports = {
 					}
 					messageToSend += `Total : ${totalHits}`;
 					messageToSend = Formatters.codeBlock(messageToSend);
-					channel.send(messageToSend);
+					await interaction.editReply(messageToSend);
 					return;
 				}
 			}
