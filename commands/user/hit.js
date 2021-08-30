@@ -80,35 +80,17 @@ module.exports = {
 					if(hitUser == dataJSON.users[i].id){
 						//set our found flag to true to show that the user exists in the database and doesn't need to be added
 						userFound = true;
-						//check to see if the user has already done their 3 hits for today
-						if(dataJSON.users[i].hits == MAXHITS){
-							console.log(interaction.user.username + ' has hit the max times day');
-							const maxHitsEmbed = new MessageEmbed()
-								.setColor('#E3443B')
-								.setDescription(`You have already hit ${MAXHITS} times today!`);
-							interaction.reply({embeds:[maxHitsEmbed]});
-							return;
-						}
-						else if(dataJSON.users[i].hits + hitAmount > MAXHITS){
-							const overMaxHitsEmbed = new MessageEmbed()
-								.setColor('#E3443B')
-								.setDescription(`Invalid amount entered! You already recorded ${dataJSON.users[i].hits} hit(s) today, ${hitAmount} puts you over ${MAXHITS} hits!`);
-							interaction.reply({embeds:[overMaxHitsEmbed]});
-							return;
-						}
-						else{
-							//increase the users daily hits
-							dataJSON.users[i].hits += hitAmount;
-							//alerts user
-							const hitsEmbed = new MessageEmbed()
-								.setColor('#E3443B')
-								.setDescription(`You have hit the boss ${dataJSON.users[i].hits} time(s) today`);
-							interaction.reply({embeds:[hitsEmbed]});
-							//updates database file
-							let dataSave = JSON.stringify(dataJSON);
-							fs.writeFileSync(`./databases/${configJSON.servers[cfg].startCB}${interaction.guild.id}${configJSON.servers[cfg].endCB}.json`,dataSave);
-							return;
-						}
+						//increase the users daily hits
+						dataJSON.users[i].hits = hitAmount;
+						//alerts user
+						const hitsEmbed = new MessageEmbed()
+							.setColor('#E3443B')
+							.setDescription(`You have recorded ${dataJSON.users[i].hits} hit(s) for today!`);
+						interaction.reply({embeds:[hitsEmbed]});
+						//updates database file
+						let dataSave = JSON.stringify(dataJSON);
+						fs.writeFileSync(`./databases/${configJSON.servers[cfg].startCB}${interaction.guild.id}${configJSON.servers[cfg].endCB}.json`,dataSave);
+						return;
 						break;
 					}
 				}
@@ -125,7 +107,7 @@ module.exports = {
 					//alert the user
 					const hitsEmbed = new MessageEmbed()
 						.setColor('#E3443B')
-						.setDescription(`You have hit the boss ${hitAmount} time(s) today!`);
+						.setDescription(`You have recorded ${hitAmount} hit(s) for today!`);
 					interaction.reply({embeds:[hitsEmbed]});
 					return;
 				}

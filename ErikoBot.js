@@ -121,6 +121,7 @@ client.on('messageCreate', async message => {
 	}
 	
 	if (message.content.toLowerCase() === '!eriko deploy' && message.author.id == '492850107038040095') {
+		await client.guilds.cache.get(message.guildId).commands.set([]);
 		console.log('deploying commands');
 		const data = [
 		{
@@ -128,13 +129,37 @@ client.on('messageCreate', async message => {
 			description: 'Gives you my contact information!',
 		},
 		{
-			name: 'removehits',
-			description: 'Removes a users hits for today',
+			name: 'sethits',
+			description: 'Sets a users hits for today',
 			options: [{
 				name: 'id',
-				type: 'STRING',
+				type: 'USER',
 				description: 'The users ID',
 				required: true,
+			},
+			{
+				name: 'hits',
+				type: 'INTEGER',
+				description: 'Enter 0, 1, 2 or 3.',
+				required: true,
+				choices:[
+					{
+						name:'0',
+						value:0
+					},
+					{
+						name:'1',
+						value:1
+					},
+					{
+						name:'2',
+						value:2
+					},
+					{
+						name:'3',
+						value:3
+					},
+				]
 			}],
 		},
 		{
