@@ -51,7 +51,7 @@ module.exports = {
 					for(let i=0;i<dataJSON.users.length;i++){
 						//go through all users and display their name plus how many hits they've done today
 						totalHits += dataJSON.users[i].hits;
-						let userNick = await interaction.guild.members.fetch(dataJSON.users[i].id).then(user => {return user.displayName});
+						let userNick = await interaction.guild.members.fetch(dataJSON.users[i].id).then(user => {return user.displayName}).catch(e => {return dataJSON.users[i].name});
 						let userObject = {name:userNick,hits:dataJSON.users[i].hits};
 						userArray.push(userObject);
 					}

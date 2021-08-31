@@ -44,7 +44,7 @@ module.exports = {
 							usersHits += dataJSON.users[i].total[j].hits;
 							totalHits += dataJSON.users[i].total[j].hits;
 						}
-						let userNick = await interaction.guild.members.fetch(dataJSON.users[i].id).then(user => {return user.displayName});
+						let userNick = await interaction.guild.members.fetch(dataJSON.users[i].id).then(user => {return user.displayName}).catch(e => {return dataJSON.users[i].name});
 						let userObject = {name:userNick,hits:usersHits};
 						userArray.push(userObject);
 					}
