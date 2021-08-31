@@ -42,18 +42,25 @@ module.exports = {
 					let msDiff = nextEnd.getTime() - currentTime.getTime();
 					let hourDiff = Math.floor((msDiff % 86400000) / 3600000);
 					let minDiff = Math.round(((msDiff % 86400000) % 3600000) / 60000);
-					
+					let userArray = [];
 					//read the file and parse it
 					let dataRead = fs.readFileSync(`./databases/${configJSON.servers[cfg].startCB}${interaction.guild.id}${configJSON.servers[cfg].endCB}.json`);
 					let dataJSON = JSON.parse(dataRead);
 					//initialize the message with something, discord js crashes if an empty message is sent
 					let totalHits = 0;
-					let messageToSend = `Today's hits\n`;
 					for(let i=0;i<dataJSON.users.length;i++){
 						//go through all users and display their name plus how many hits they've done today
 						totalHits += dataJSON.users[i].hits;
 						let userNick = await interaction.guild.members.fetch(dataJSON.users[i].id).then(user => {return user.displayName});
-						messageToSend += `${userNick} : ${dataJSON.users[i].hits}\n`;
+						let userObject = {name:userNick,hits:dataJSON.users[i].hits};
+						userArray.push(userObject);
+					}
+					userArray.sort(function(a,b){
+						return parseInt(b.hits) - parseInt(a.hits);
+					});
+					let messageToSend = `Today's hits\n`;
+					for(let i=0i<userArray.length;i++){
+						messageToSend += `${userArray[i].name} : ${userArray[i].hits}\n`;
 					}
 					messageToSend += `Total for today : ${totalHits}\n${hourDiff}:${minDiff} left today`;
 					messageToSend = Formatters.codeBlock(messageToSend);

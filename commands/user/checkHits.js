@@ -116,19 +116,26 @@ module.exports = {
 					let timeDiff = lookDate.getTime() - startCB.getTime();
 					let dayDiff = Math.floor(timeDiff / (1000 * 3600 * 24));
 					dayDiff += 1;
-					
+					let userArray = [];
 					//initialize message so discord js doesn't crash
-					let messageToSend = `Hits for ${selectedDate} (Day ${dayDiff} of CB)\n`;
 					for(let i=0;i<dataJSON.users.length;i++){
 						for(let j=0;j<dataJSON.users[i].total.length;j++){
 							//if date is found using date code above, store it to the message
 							if(selectedDate == dataJSON.users[i].total[j].date){
 								totalHits += dataJSON.users[i].total[j].hits;
 								let userNick = await interaction.guild.members.fetch(dataJSON.users[i].id).then(user => {return user.displayName});
-								messageToSend += `${userNick} : ${dataJSON.users[i].total[j].hits}\n`;
+								let userObject = {name:userNick,hits:dataJSON.users[i].total[j].hits};
+								userArray.push(userObject);
 								break;
 							}
 						}
+					}
+					userArray.sort(function(a,b){
+						return parseInt(b.hits) - parseInt(a.hits);
+					});
+					let messageToSend = `Hits for ${selectedDate} (Day ${dayDiff} of CB)\n`;
+					for(let i=0i<userArray.length;i++){
+						messageToSend += `${userArray[i].name} : ${userArray[i].hits}\n`;
 					}
 					messageToSend += `Total for ${selectedDate} : ${totalHits}`;
 					messageToSend = Formatters.codeBlock(messageToSend);

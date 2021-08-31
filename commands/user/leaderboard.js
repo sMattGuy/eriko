@@ -35,7 +35,7 @@ module.exports = {
 					let dataJSON = JSON.parse(dataRead);
 					let totalHits = 0;
 					//initialize message so discord js doesn't crash
-					let messageToSend = `Leaderboard for CB from ${configJSON.servers[cfg].startCB} to ${configJSON.servers[cfg].endCB}\n`;
+					let userArray = [];
 					for(let i=0;i<dataJSON.users.length;i++){
 						let usersHits = dataJSON.users[i].hits;
 						totalHits += usersHits;
@@ -45,7 +45,15 @@ module.exports = {
 							totalHits += dataJSON.users[i].total[j].hits;
 						}
 						let userNick = await interaction.guild.members.fetch(dataJSON.users[i].id).then(user => {return user.displayName});
-						messageToSend += `${userNick} : ${usersHits}\n`;
+						let userObject = {name:userNick,hits:usersHits};
+						userArray.push(userObject);
+					}
+					userArray.sort(function(a,b){
+						return parseInt(b.hits) - parseInt(a.hits);
+					});
+					let messageToSend = `Leaderboard for CB from ${configJSON.servers[cfg].startCB} to ${configJSON.servers[cfg].endCB}\n`;
+					for(let i=0i<userArray.length;i++){
+						messageToSend += `${userArray[i].name} : ${userArray[i].hits}\n`;
 					}
 					messageToSend += `Total : ${totalHits}`;
 					messageToSend = Formatters.codeBlock(messageToSend);
