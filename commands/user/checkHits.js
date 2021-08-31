@@ -134,7 +134,7 @@ module.exports = {
 						return parseInt(b.hits) - parseInt(a.hits);
 					});
 					let messageToSend = `Hits for ${selectedDate} (Day ${dayDiff} of CB)\n`;
-					for(let i=0i<userArray.length;i++){
+					for(let i=0;i<userArray.length;i++){
 						messageToSend += `${userArray[i].name} : ${userArray[i].hits}\n`;
 					}
 					messageToSend += `Total for ${selectedDate} : ${totalHits}`;

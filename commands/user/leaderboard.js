@@ -52,7 +52,7 @@ module.exports = {
 						return parseInt(b.hits) - parseInt(a.hits);
 					});
 					let messageToSend = `Leaderboard for CB from ${configJSON.servers[cfg].startCB} to ${configJSON.servers[cfg].endCB}\n`;
-					for(let i=0i<userArray.length;i++){
+					for(let i=0;i<userArray.length;i++){
 						messageToSend += `${userArray[i].name} : ${userArray[i].hits}\n`;
 					}
 					messageToSend += `Total : ${totalHits}`;

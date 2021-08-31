@@ -59,7 +59,7 @@ module.exports = {
 						return parseInt(b.hits) - parseInt(a.hits);
 					});
 					let messageToSend = `Today's hits\n`;
-					for(let i=0i<userArray.length;i++){
+					for(let i=0;i<userArray.length;i++){
 						messageToSend += `${userArray[i].name} : ${userArray[i].hits}\n`;
 					}
 					messageToSend += `Total for today : ${totalHits}\n${hourDiff}:${minDiff} left today`;
