@@ -128,6 +128,28 @@ client.on('messageCreate', async message => {
 			}],
 		},
 		{
+			name: 'createcb',
+			description: 'Creates a new Clan Battle database',
+			options: [{
+				name: 'start',
+				type: 'STRING',
+				description: 'The start date in MMDDYYYY format',
+				required: true,
+			},
+			{
+				name: 'end',
+				type: 'STRING',
+				description: 'The end date in MMDDYYYY format',
+				required: true,
+			},
+			{
+				name: 'number',
+				type: 'INTEGER',
+				description: 'The number of the clan battle',
+				required: true,
+			}],
+		},
+		{
 			name: 'hit',
 			description: 'Records 1 to 3 hits for the day',
 			options: [{
