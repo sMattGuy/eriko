@@ -118,6 +118,16 @@ client.on('messageCreate', async message => {
 			}],
 		},
 		{
+			name: 'showcb',
+			description: 'Shows the leaderboard for a previous CB',
+			options: [{
+				name: 'number',
+				type: 'INTEGER',
+				description: 'The number of the CB',
+				required: true,
+			}],
+		},
+		{
 			name: 'startcb',
 			description: 'Sets the start date for a Clan Battle',
 			options: [{
