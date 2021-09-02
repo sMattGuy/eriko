@@ -54,7 +54,7 @@ module.exports = {
 		}
 		if(!foundConfig){
 			//new config entry
-			let newConfigEntry = {'id':guildID,startCB:selectedDate,endCB:'00000000'};
+			let newConfigEntry = {'id':guildID,startCB:startDate,endCB:endDate};
 			configJSON.servers.push(newConfigEntry);
 		}
 		//writes new database
@@ -69,7 +69,7 @@ module.exports = {
 		fs.writeFileSync(`./config.json`,configSave);
 		const setStartEmbed = new MessageEmbed()
 			.setColor('#E3443B')
-			.setDescription(`The CB start date has been set to ${selectedDate}`);
+			.setDescription(`CB number ${cbNumber} has been created with start date ${startDate} and end date ${endDate}`);
 		interaction.reply({embeds:[setStartEmbed]});
 	}
 };
