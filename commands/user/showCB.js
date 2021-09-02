@@ -14,7 +14,7 @@ module.exports = {
 		const databases = fs.readdirSync(`./databases/`).filter(file => file.includes(interaction.guild.id));
 		let clanbattleData = 'nothing';
 		for(const file of databases){
-			let tempdata = fs.readFileSync(file);
+			let tempdata = fs.readFileSync(`./databases/${file}`);
 			let tempJSON = JSON.parse(tempdata);
 			if(tempJSON.num == cbNumber){
 				clanbattleData = tempJSON;
