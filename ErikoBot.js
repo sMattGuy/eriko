@@ -65,7 +65,7 @@ client.on('messageCreate', async message => {
 	
 	processDaily()
 	
-	if (message.content.toLowerCase() === '!eriko deploy' && message.author.id == '492850107038040095') {
+	if (message.content.toLowerCase() === '!eriko deploy' && (message.author.id == '492850107038040095' || message.author.id == '81161029391753216')) {
 		await client.guilds.cache.get(message.guildId).commands.set([]);
 		console.log('deploying commands');
 		const data = [
