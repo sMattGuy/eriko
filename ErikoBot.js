@@ -108,6 +108,16 @@ client.on('messageCreate', async message => {
 			}],
 		},
 		{
+			name: 'setnumber',
+			description: 'Sets the number for a the current CB',
+			options: [{
+				name: 'number',
+				type: 'INTEGER',
+				description: 'The number of the CB',
+				required: true,
+			}],
+		},
+		{
 			name: 'startcb',
 			description: 'Sets the start date for a Clan Battle',
 			options: [{
