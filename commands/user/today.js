@@ -30,6 +30,10 @@ module.exports = {
 			if(configJSON.servers[cfg].id == interaction.guild.id){
 				//do numbers magic to figure out date diffs
 				let startCB = new Date(`${configJSON.servers[cfg].startCB.substring(0,2)}/${configJSON.servers[cfg].startCB.substring(2,4)}/${configJSON.servers[cfg].startCB.substring(4,8)}`);
+				startCB.setUTCHours(13);
+				startCB.setUTCMinutes(0);
+				startCB.setUTCSeconds(0);
+				startCB.setUTCMilliseconds(0);
 				console.log(startCB);
 				
 				let timeDiff = currentTime.getTime() - startCB.getTime();

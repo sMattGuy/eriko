@@ -39,9 +39,17 @@ module.exports = {
 			if(configJSON.servers[i].id == guildID){
 				foundConfig = true;
 				let startCB = new Date(`${configJSON.servers[i].startCB.substring(0,2)}/${configJSON.servers[i].startCB.substring(2,4)}/${configJSON.servers[i].startCB.substring(4,8)}`);
+				startCB.setUTCHours(13);
+				startCB.setUTCMinutes(0);
+				startCB.setUTCSeconds(0);
+				startCB.setUTCMilliseconds(0);
 				console.log(startCB);
 				
 				let endCB = new Date(`${selectedDate.substring(0,2)}/${selectedDate.substring(2,4)}/${selectedDate.substring(4,8)}`);
+				endCB.setUTCHours(13);
+				endCB.setUTCMinutes(0);
+				endCB.setUTCSeconds(0);
+				endCB.setUTCMilliseconds(0);
 				console.log(endCB);
 				
 				if(endCB.getTime() - startCB.getTime() < 0){

@@ -23,7 +23,10 @@ module.exports = {
 				if(configJSON.servers[cfg].id == interaction.guild.id){
 					let startCB = new Date(`${configJSON.servers[cfg].startCB.substring(0,2)}/${configJSON.servers[cfg].startCB.substring(2,4)}/${configJSON.servers[cfg].startCB.substring(4,8)}`);
 					console.log(startCB);
-					
+					startCB.setUTCHours(13);
+					startCB.setUTCMinutes(0);
+					startCB.setUTCSeconds(0);
+					startCB.setUTCMilliseconds(0);
 					let timeDiff = startCB.getTime() - Date.now();
 					let dayDiff = Math.floor(timeDiff / (1000 * 3600 * 24));
 					dayDiff += 1;

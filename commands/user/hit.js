@@ -36,7 +36,15 @@ module.exports = {
 		for(let cfg=0;cfg<configJSON.servers.length;cfg++){
 			if(configJSON.servers[cfg].id == interaction.guild.id){
 				let startCB = new Date(`${configJSON.servers[cfg].startCB.substring(0,2)}/${configJSON.servers[cfg].startCB.substring(2,4)}/${configJSON.servers[cfg].startCB.substring(4,8)}`);
+				startCB.setUTCHours(13);
+				startCB.setUTCMinutes(0);
+				startCB.setUTCSeconds(0);
+				startCB.setUTCMilliseconds(0);
 				let endCB = new Date(`${configJSON.servers[cfg].endCB.substring(0,2)}/${configJSON.servers[cfg].endCB.substring(2,4)}/${configJSON.servers[cfg].endCB.substring(4,8)}`);
+				endCB.setUTCHours(13);
+				endCB.setUTCMinutes(0);
+				endCB.setUTCSeconds(0);
+				endCB.setUTCMilliseconds(0);
 				console.log(startCB);
 				console.log(endCB);
 				let currentTime = new Date();
