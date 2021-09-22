@@ -40,7 +40,7 @@ module.exports = {
 				console.log(startCB);
 				console.log(endCB);
 				let currentTime = new Date();
-				let timeDiff = startCB.getTime() - currentTime.getTime();
+				let timeDiff = startCB.getTime() - Date.now();
 				let dayDiff = Math.floor(timeDiff / (1000 * 3600 * 24));
 				
 				if(dayDiff >= 0){
@@ -50,7 +50,7 @@ module.exports = {
 					interaction.reply({embeds:[invalidStartEmbed]});
 					return;
 				}
-				timeDiff = endCB.getTime() - currentTime.getTime();
+				timeDiff = endCB.getTime() - Date.now();
 				dayDiff = Math.floor(timeDiff / (1000 * 3600 * 24));
 				if(dayDiff <= 0){
 					const invalidEndEmbed = new MessageEmbed()

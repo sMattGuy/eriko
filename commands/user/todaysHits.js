@@ -39,7 +39,7 @@ module.exports = {
 					nextEnd.setUTCMinutes(0);
 					nextEnd.setUTCSeconds(0);
 					console.log(nextEnd);
-					let msDiff = nextEnd.getTime() - currentTime.getTime();
+					let msDiff = nextEnd.getTime() - Date.now();
 					let hourDiff = Math.floor((msDiff % 86400000) / 3600000);
 					let minDiff = Math.round(((msDiff % 86400000) % 3600000) / 60000);
 					let userArray = [];

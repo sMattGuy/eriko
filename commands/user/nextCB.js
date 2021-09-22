@@ -24,7 +24,7 @@ module.exports = {
 					let startCB = new Date(`${configJSON.servers[cfg].startCB.substring(0,2)}/${configJSON.servers[cfg].startCB.substring(2,4)}/${configJSON.servers[cfg].startCB.substring(4,8)}`);
 					console.log(startCB);
 					
-					let timeDiff = startCB.getTime() - currentTime.getTime();
+					let timeDiff = startCB.getTime() - Date.now();
 					let dayDiff = Math.floor(timeDiff / (1000 * 3600 * 24));
 					dayDiff += 1;
 					let dayResult = 'error';
