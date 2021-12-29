@@ -20,7 +20,7 @@ module.exports = {
 			
 			let CBNum = tempJSON.num;
 			let startDate = file.substring(0,8);
-			let endDate = file.substring(file.length - 8);
+			let endDate = file.substring(file.length-13,file.length-5);
 			
 			messageToSend += `Clan Battle: ${CBNum}, Started: ${startDate}, Ended: ${endDate}\n`;
 		}
