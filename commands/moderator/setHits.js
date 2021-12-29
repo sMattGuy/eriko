@@ -5,11 +5,12 @@ module.exports = {
 	name: 'sethits',
 	description: 'sets a users hits for that day',
 	async execute(interaction){
+		await interaction.deferReply();
 		if(!interaction.member.roles.cache.has('815669639107051552') && !interaction.member.roles.cache.has('815669643648827452') && !interaction.member.roles.cache.has('872981028262801448') && !interaction.guild.ownerId === interaction.user.id){
 			const invalidPermissions = new MessageEmbed()
 				.setColor('#E3443B')
 				.setDescription(`You do not have permission to use this command!`);
-			interaction.reply({embeds:[invalidPermissions]});
+			interaction.editReply({embeds:[invalidPermissions]});
 			return;
 		}
 		//pull the final date part into a separate variable
@@ -23,7 +24,7 @@ module.exports = {
 			const noConfigEmbed = new MessageEmbed()
 				.setColor('#E3443B')
 				.setDescription(`No config for this server, ask a mod to set the start and end of a CB!`);
-			interaction.reply({embeds:[noConfigEmbed]});
+			interaction.editReply({embeds:[noConfigEmbed]});
 		}
 		else{
 			//read the database
@@ -36,7 +37,7 @@ module.exports = {
 						const noDatabaseEmbed = new MessageEmbed()
 							.setColor('#E3443B')
 							.setDescription(`No database has been made for this server, try hitting the boss!`);
-						interaction.reply({embeds:[noDatabaseEmbed]});
+						interaction.editReply({embeds:[noDatabaseEmbed]});
 						return;
 					}
 					else{
@@ -52,14 +53,14 @@ module.exports = {
 								const removeEmbed = new MessageEmbed()
 									.setColor('#E3443B')
 									.setDescription(`${userNick} has had their hits set to ${newHits}!`);
-								interaction.reply({embeds:[removeEmbed]});
+								interaction.editReply({embeds:[removeEmbed]});
 								return;
 							}
 						}
 						const noUserEmbed = new MessageEmbed()
 							.setColor('#E3443B')
 							.setDescription(`The user with ID ${selectedUser} does not exist in the database!`);
-						interaction.reply({embeds:[noUserEmbed]});
+						interaction.editReply({embeds:[noUserEmbed]});
 						return;
 					}
 				}

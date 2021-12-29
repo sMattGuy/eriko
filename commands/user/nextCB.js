@@ -5,6 +5,7 @@ module.exports = {
 	name: 'nextcb',
 	description: 'gets the days left until the next CB',
 	async execute(interaction){
+		await interaction.deferReply();
 		console.log(interaction.user.username + ' is checking start date of next cb');
 		//check that the database exists
 		if(!fs.existsSync(`./config.json`)){
@@ -12,7 +13,7 @@ module.exports = {
 			const noConfigEmbed = new MessageEmbed()
 				.setColor('#E3443B')
 				.setDescription(`The next CB has not been set up!`);
-			interaction.reply({embeds:[noConfigEmbed]});
+			interaction.editReply({embeds:[noConfigEmbed]});
 		}
 		else{
 			let currentTime = new Date();
@@ -40,7 +41,7 @@ module.exports = {
 					const nextCBEmbed = new MessageEmbed()
 						.setColor('#E3443B')
 						.setDescription(dayResult);
-					interaction.reply({embeds:[nextCBEmbed]});
+					interaction.editReply({embeds:[nextCBEmbed]});
 					break;
 				}
 			}

@@ -5,11 +5,12 @@ module.exports = {
 	name: 'endcb',
 	description: 'sets the end date of a CB',
 	async execute(interaction){
+		await interaction.deferReply();
 		if(!interaction.member.roles.cache.has('815669639107051552') && !interaction.member.roles.cache.has('815669643648827452') && !interaction.member.roles.cache.has('872981028262801448') && !interaction.guild.ownerId === interaction.user.id){
 			const invalidPermissions = new MessageEmbed()
 				.setColor('#E3443B')
 				.setDescription(`You do not have permission to use this command!`);
-			interaction.reply({embeds:[invalidPermissions]});
+			interaction.editReply({embeds:[invalidPermissions]});
 			return;
 		}
 		//pull the final date part into a separate variable
@@ -18,7 +19,7 @@ module.exports = {
 			const invalidFormatEmbed = new MessageEmbed()
 				.setColor('#E3443B')
 				.setDescription(`Make sure your date is in MMDDYYYY format!`);
-			interaction.reply({embeds:[invalidFormatEmbed]});
+			interaction.editReply({embeds:[invalidFormatEmbed]});
 			return;
 		}
 		console.log(interaction.user.username + ' is setting the CB end for ' + selectedDate);
@@ -56,7 +57,7 @@ module.exports = {
 					const invalidEndTime = new MessageEmbed()
 						.setColor('#E3443B')
 						.setDescription(`End time cannot be before the start time!`);
-					interaction.reply({embeds:[invalidEndTime]});
+					interaction.editReply({embeds:[invalidEndTime]});
 					return;
 				}
 				
@@ -78,6 +79,6 @@ module.exports = {
 		const setEndEmbed = new MessageEmbed()
 			.setColor('#E3443B')
 			.setDescription(`The CB end date has been set to ${selectedDate}`);
-		interaction.reply({embeds:[setEndEmbed]});
+		interaction.editReply({embeds:[setEndEmbed]});
 	}
 };

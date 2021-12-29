@@ -5,6 +5,7 @@ module.exports = {
 	name: 'today',
 	description: 'gets today',
 	async execute(interaction){
+		interaction.deferReply();
 		console.log(interaction.user.username + ' is checking today\'s date');
 		currentTime = new Date();
 		//this uses the same time conversion as above, so check there for the explanation on PrST
@@ -20,7 +21,7 @@ module.exports = {
 			const noConfigEmbed = new MessageEmbed()
 				.setColor('#E3443B')
 				.setDescription(`The next CB has not been set up!`);
-			interaction.reply({embeds:[noConfigEmbed]});
+			interaction.editReply({embeds:[noConfigEmbed]});
 			return;
 		}
 		//read the database
@@ -42,7 +43,7 @@ module.exports = {
 				const todayEmbed = new MessageEmbed()
 					.setColor('#E3443B')
 					.setDescription(`Today's date is ${formattedDate} (Day ${dayDiff} of CB)`);
-				interaction.reply({embeds:[todayEmbed]});
+				interaction.editReply({embeds:[todayEmbed]});
 				break;
 			}
 		}

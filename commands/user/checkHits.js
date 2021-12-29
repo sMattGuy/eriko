@@ -5,6 +5,7 @@ module.exports = {
 	name: 'checkhits',
 	description: 'check specific days hits',
 	async execute(interaction){
+		await interaction.deferReply();
 		//pull the final date part into a separate variable
 		let selectedDate = interaction.options.getString('date');
 		console.log(interaction.user.username + ' is checking hits for ' + selectedDate);
@@ -14,7 +15,7 @@ module.exports = {
 			const noConfigEmbed = new MessageEmbed()
 				.setColor('#E3443B')
 				.setDescription(`The next CB has not been set up!`);
-			interaction.reply({embeds:[noConfigEmbed]});
+			interaction.editReply({embeds:[noConfigEmbed]});
 			return;
 		}
 		let configRead = fs.readFileSync(`./config.json`);
@@ -27,7 +28,7 @@ module.exports = {
 					const noDatabaseEmbed = new MessageEmbed()
 						.setColor('#E3443B')
 						.setDescription(`No hits have been recorded`);
-					interaction.reply({embeds:[noDatabaseEmbed]});
+					interaction.editReply({embeds:[noDatabaseEmbed]});
 					return;
 				}
 				else{
@@ -149,6 +150,6 @@ module.exports = {
 		const noConfigEmbed = new MessageEmbed()
 			.setColor('#E3443B')
 			.setDescription(`Configuration for this server has not been set up!`);
-		interaction.reply({embeds:[noConfigEmbed]});
+		interaction.editReply({embeds:[noConfigEmbed]});
 	}
 };

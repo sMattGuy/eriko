@@ -5,11 +5,12 @@ module.exports = {
 	name: 'createcb',
 	description: 'creates a new CB',
 	async execute(interaction){
+		await interaction.deferReply();
 		if(!interaction.member.roles.cache.has('815669639107051552') && !interaction.member.roles.cache.has('815669643648827452') && !interaction.member.roles.cache.has('872981028262801448') && !interaction.guild.ownerId === interaction.user.id){
 			const invalidPermissions = new MessageEmbed()
 				.setColor('#E3443B')
 				.setDescription(`You do not have permission to use this command!`);
-			interaction.reply({embeds:[invalidPermissions]});
+			interaction.editReply({embeds:[invalidPermissions]});
 			return;
 		}
 		//pull the final date part into a separate variable
@@ -20,14 +21,14 @@ module.exports = {
 			const invalidFormatEmbed = new MessageEmbed()
 				.setColor('#E3443B')
 				.setDescription(`Make sure your date is in MMDDYYYY format!`);
-			interaction.reply({embeds:[invalidFormatEmbed]});
+			interaction.editReply({embeds:[invalidFormatEmbed]});
 			return;
 		}
 		if(cbNumber <= 0){
 			const invalidNumberEmbed = new MessageEmbed()
 				.setColor('#E3443B')
 				.setDescription(`Make sure your CB Number is correct!`);
-			interaction.reply({embeds:[invalidNumberEmbed]});
+			interaction.editReply({embeds:[invalidNumberEmbed]});
 			return;
 		}
 		console.log(interaction.user.username + ' is creating the CB ' + startDate + ' ' + endDate + ' ' + cbNumber);
@@ -70,6 +71,6 @@ module.exports = {
 		const setStartEmbed = new MessageEmbed()
 			.setColor('#E3443B')
 			.setDescription(`CB number ${cbNumber} has been created with start date ${startDate} and end date ${endDate}`);
-		interaction.reply({embeds:[setStartEmbed]});
+		interaction.editReply({embeds:[setStartEmbed]});
 	}
 };

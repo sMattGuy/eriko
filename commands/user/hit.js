@@ -7,6 +7,7 @@ module.exports = {
 	name: 'hit',
 	description: 'command for registering a git',
 	async execute(interaction){
+		interaction.deferReply();
 		//this command is used so that individual users can report that they have hit the boss
 		//NOTE this bot has no way of actually verifying that the boss was actually hit, so it works on an honor system
 		//possible update would be to somehow include a way of verifying interactions
@@ -15,7 +16,7 @@ module.exports = {
 			const invalidHitsEmbed = new MessageEmbed()
 				.setColor('#E3443B')
 				.setDescription(`You can only hit the boss 1 to 3 times!`);
-			interaction.reply({embeds:[invalidHitsEmbed]});
+			interaction.editReply({embeds:[invalidHitsEmbed]});
 			return;
 		}
 		console.log(interaction.user.username + ' is hitting the boss');
@@ -23,7 +24,7 @@ module.exports = {
 			const noConfigEmbed = new MessageEmbed()
 				.setColor('#E3443B')
 				.setDescription(`A moderator has not yet set up the beginning and end of the Clan Battle!`);
-			interaction.reply({embeds:[noConfigEmbed]});
+			interaction.editReply({embeds:[noConfigEmbed]});
 			return;
 		}
 		let configRead = fs.readFileSync(`./config.json`);
@@ -55,7 +56,7 @@ module.exports = {
 					const invalidStartEmbed = new MessageEmbed()
 						.setColor('#E3443B')
 						.setDescription(`The next Clan Battle is in ${dayDiff} days!`);
-					interaction.reply({embeds:[invalidStartEmbed]});
+					interaction.editReply({embeds:[invalidStartEmbed]});
 					return;
 				}
 				timeDiff = endCB.getTime() - Date.now();
@@ -64,7 +65,7 @@ module.exports = {
 					const invalidEndEmbed = new MessageEmbed()
 						.setColor('#E3443B')
 						.setDescription(`The clan battle has already passed!`);
-					interaction.reply({embeds:[invalidEndEmbed]});
+					interaction.editReply({embeds:[invalidEndEmbed]});
 					return;
 				}
 				
@@ -94,7 +95,7 @@ module.exports = {
 						const hitsEmbed = new MessageEmbed()
 							.setColor('#E3443B')
 							.setDescription(`You have recorded ${dataJSON.users[i].hits} hit(s) for today!`);
-						interaction.reply({embeds:[hitsEmbed]});
+						interaction.editReply({embeds:[hitsEmbed]});
 						//updates database file
 						let dataSave = JSON.stringify(dataJSON);
 						fs.writeFileSync(`./databases/${configJSON.servers[cfg].startCB}${interaction.guild.id}${configJSON.servers[cfg].endCB}.json`,dataSave);
@@ -116,7 +117,7 @@ module.exports = {
 					const hitsEmbed = new MessageEmbed()
 						.setColor('#E3443B')
 						.setDescription(`You have recorded ${hitAmount} hit(s) for today!`);
-					interaction.reply({embeds:[hitsEmbed]});
+					interaction.editReply({embeds:[hitsEmbed]});
 					return;
 				}
 				break;
@@ -125,6 +126,6 @@ module.exports = {
 		const noDatabaseEmbed = new MessageEmbed()
 			.setColor('#E3443B')
 			.setDescription(`Database file does not exist`);
-		interaction.reply({embeds:[noDatabaseEmbed]});
+		interaction.editReply({embeds:[noDatabaseEmbed]});
 	}
 };
