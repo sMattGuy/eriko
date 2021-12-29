@@ -7,7 +7,7 @@ module.exports = {
 	name: 'hit',
 	description: 'command for registering a git',
 	async execute(interaction){
-		interaction.deferReply();
+		await interaction.deferReply();
 		//this command is used so that individual users can report that they have hit the boss
 		//NOTE this bot has no way of actually verifying that the boss was actually hit, so it works on an honor system
 		//possible update would be to somehow include a way of verifying interactions
