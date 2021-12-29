@@ -128,6 +128,10 @@ client.on('messageCreate', async message => {
 			}],
 		},
 		{
+			name: 'showhistory',
+			description: 'Shows the history of CBs',
+		},
+		{
 			name: 'startcb',
 			description: 'Sets the start date for a Clan Battle',
 			options: [{
