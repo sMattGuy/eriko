@@ -5,7 +5,7 @@ module.exports = {
 	name: 'today',
 	description: 'gets today',
 	async execute(interaction){
-		interaction.deferReply();
+		await interaction.deferReply();
 		console.log(interaction.user.username + ' is checking today\'s date');
 		currentTime = new Date();
 		//this uses the same time conversion as above, so check there for the explanation on PrST
