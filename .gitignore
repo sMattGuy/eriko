@@ -3,3 +3,5 @@ auth.json
 config.json
 package-lock.json
 databases/*
+runbot.sh
+screenlog.0
