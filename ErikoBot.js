@@ -38,8 +38,8 @@ client.on('ready', async () => {
 client.on('messageCreate', async message => {
 	//haha funny
 	if(messageMap.has(message.channel.id) && !message.author.bot){
-		if(messageMap.get(message.channel.id).content == message.content && messageMap.get(message.channel.id).author != message.author.id){
-			let messUpdate = messageMap.get(message.channel.id);
+		let messUpdate = messageMap.get(message.channel.id);
+		if(messUpdate.content == message.content && messUpdate.author != message.author.id && messUpdate.sticker.first().id == message.stickers.first().id){
 			messUpdate.times += 1;
 			messUpdate.author = message.author.id;
 			messageMap.set(message.channel.id,messUpdate);
