@@ -9,7 +9,7 @@ module.exports = {
 		console.log(interaction.user.username + ' is checking CB history');
 		await interaction.deferReply();
 		//check that the database exists
-		let cbHistory = await cb.findAll({where:{'server_id': interaction.guild.id}});
+		let cbHistory = await cb.findAll({where:{'server_id': interaction.guild.id}, order:[['cb_id', 'DESC']]});
 		if(!cbHistory){
 			console.log('No database file found');
 			const noDatabaseEmbed = new EmbedBuilder()

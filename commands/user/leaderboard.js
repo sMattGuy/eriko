@@ -15,7 +15,7 @@ module.exports = {
 			const noConfigEmbed = new EmbedBuilder()
 				.setColor('#E3443B')
 				.setDescription(`No CB information is available!`);
-			interaction.editReply({embeds:[noConfigEmbed]});
+			await interaction.editReply({embeds:[noConfigEmbed]});
 			return;
 		}	
 		//read the database
@@ -27,7 +27,7 @@ module.exports = {
 			const noConfigEmbed = new EmbedBuilder()
 				.setColor('#E3443B')
 				.setDescription(`No CB information is available!`);
-			interaction.editReply({embeds:[noConfigEmbed]});
+			await interaction.editReply({embeds:[noConfigEmbed]});
 			return;
 		}
 		let userArray = [];
@@ -42,7 +42,7 @@ module.exports = {
 			return parseInt(b.hits) - parseInt(a.hits);
 		});
 		
-		interaction.editReply(`Leaderboard for CB from ${cbConfig.startCB} to ${cbConfig.endCB}\n`);
+		await interaction.editReply(`Leaderboard for CB from ${cbConfig.start_date} to ${cbConfig.end_date}`);
 		let messageToSend = '';
 		for(let i=0;i<userArray.length;i++){
 			let messageAddition = `${userArray[i].name} : ${userArray[i].hits}\n`;

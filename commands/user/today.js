@@ -29,19 +29,37 @@ module.exports = {
 		//read the database
 		//do numbers magic to figure out date diffs
 		let savedTime = cbConfig.start_date;
+		let savedEndTime = cbConfig.end_date;
 		let startCB = new Date(`${savedTime.substring(0,2)}/${savedTime.substring(2,4)}/${savedTime.substring(4,8)}`);
+		let endCB = new Date(`${savedEndTime.substring(0,2)}/${savedEndTime.substring(2,4)}/${savedEndTime.substring(4,8)}`);
 		startCB.setUTCHours(13);
 		startCB.setUTCMinutes(0);
 		startCB.setUTCSeconds(0);
 		startCB.setUTCMilliseconds(0);
 		console.log(startCB);
 		
+		endCB.setUTCHours(13);
+		endCB.setUTCMinutes(0);
+		endCB.setUTCSeconds(0);
+		endCB.setUTCMilliseconds(0);
+		console.log(endCB);
+		
 		let timeDiff = currentTime.getTime() - startCB.getTime();
 		let dayDiff = Math.floor(timeDiff / (1000 * 3600 * 24));
 		dayDiff += 1;
+		
+		let endTimeDiff = endCB.getTime() - currentTime.getTime();
+		let resultText = '';
+		
+		if(endTimeDiff <= 0){
+			resultText = `Today's date is ${formattedDate} (No Active CB)`;
+		}
+		else{
+			resultText = `Today's date is ${formattedDate} (Day ${dayDiff} of CB)`;
+		}
 		const todayEmbed = new EmbedBuilder()
 			.setColor('#E3443B')
-			.setDescription(`Today's date is ${formattedDate} (Day ${dayDiff} of CB)`);
+			.setDescription(resultText);
 		interaction.editReply({embeds:[todayEmbed]});
 	}
 };

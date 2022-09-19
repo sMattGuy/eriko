@@ -35,6 +35,7 @@ module.exports = {
 			return;
 		}
 		let totalHits = 0;
+		let userArray = [];
 		//initialize message so discord js doesn't crash
 		for(let i=0;i<userData.length;i++){
 			let usersHits = userData[i].n_hits;

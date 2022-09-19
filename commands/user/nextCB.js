@@ -21,17 +21,30 @@ module.exports = {
 			let currentTime = new Date();
 			//read the database
 			let savedStartDate = cbConfig.start_date;
+			let savedEndDate = cbConfig.end_date;
 			let startCB = new Date(`${savedStartDate.substring(0,2)}/${savedStartDate.substring(2,4)}/${savedStartDate.substring(4,8)}`);
+			let endCB = new Date(`${savedEndDate.substring(0,2)}/${savedEndDate.substring(2,4)}/${savedEndDate.substring(4,8)}`);
 			console.log(startCB);
 			startCB.setUTCHours(13);
 			startCB.setUTCMinutes(0);
 			startCB.setUTCSeconds(0);
 			startCB.setUTCMilliseconds(0);
+			
+			endCB.setUTCHours(13);
+			endCB.setUTCMinutes(0);
+			endCB.setUTCSeconds(0);
+			endCB.setUTCMilliseconds(0);
+			
 			let timeDiff = startCB.getTime() - Date.now();
+			let endTimeDiff = Date.now() - endCB.getTime();
+			
 			let dayDiff = Math.floor(timeDiff / (1000 * 3600 * 24));
 			dayDiff += 1;
 			let dayResult = 'error';
-			if(dayDiff <= 0){
+			if(endTimeDiff >= 0){
+				dayResult = `There is no active Clan Battle!`;
+			}
+			else if(dayDiff <= 0){
 				dayResult = `There is currently an active Clan Battle!`;
 			}
 			else{
