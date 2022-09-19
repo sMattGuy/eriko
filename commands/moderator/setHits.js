@@ -1,13 +1,30 @@
-const fs = require('fs');
-const { MessageEmbed } = require('discord.js');
+const { EmbedBuilder, SlashCommandBuilder } = require('discord.js');
+const { users, cb, todayshits } = require('../../dbObjects.js');
 
 module.exports = {
-	name: 'sethits',
-	description: 'sets a users hits for that day',
+	data: new SlashCommandBuilder()
+		.setName('sethits')
+		.setDescription('Sets a users hits for the day')
+		.addUserOption(option =>
+			option
+				.setName('id')
+				.setDescription('The users ID')
+				.setRequired(true))
+		.addIntegerOption(option => 
+			option
+				.setName('hits')
+				.setDescription('Enter 0, 1, 2 or 3')
+				.setRequired(true)
+				.addChoices(
+					{name: '0', value: 0},
+					{name: '1', value: 1},
+					{name: '2', value: 2},
+					{name: '3', value: 3},
+				)),
 	async execute(interaction){
 		await interaction.deferReply();
 		if(!interaction.member.roles.cache.has('815669639107051552') && !interaction.member.roles.cache.has('815669643648827452') && !interaction.member.roles.cache.has('872981028262801448') && !interaction.guild.ownerId === interaction.user.id){
-			const invalidPermissions = new MessageEmbed()
+			const invalidPermissions = new EmbedBuilder()
 				.setColor('#E3443B')
 				.setDescription(`You do not have permission to use this command!`);
 			interaction.editReply({embeds:[invalidPermissions]});
@@ -17,53 +34,34 @@ module.exports = {
 		let user = interaction.options.getUser('id');
 		let selectedUser = user.id;
 		let newHits = interaction.options.getInteger('hits');
-		console.log(interaction.user.username + ' is removing hits for id ' + selectedUser);
+		console.log(interaction.user.username + ' is setting hits for id ' + selectedUser);
 		//check that the database exists
-		if(!fs.existsSync(`./config.json`)){
+		let cbConfig = await cb.findOne({where:{'server_id':interaction.guild.id}});
+		if(!cbConfig){
 			console.log('No config file found');
-			const noConfigEmbed = new MessageEmbed()
+			const noConfigEmbed = new EmbedBuilder()
 				.setColor('#E3443B')
-				.setDescription(`No config for this server, ask a mod to set the start and end of a CB!`);
+				.setDescription(`No config for this server, ask a mod to create a CB!`);
 			interaction.editReply({embeds:[noConfigEmbed]});
 		}
 		else{
 			//read the database
-			let configRead = fs.readFileSync(`./config.json`);
-			let configJSON = JSON.parse(configRead);
-			for(let cfg=0;cfg<configJSON.servers.length;cfg++){
-				if(configJSON.servers[cfg].id == interaction.guild.id){
-					if(!fs.existsSync(`./databases/${configJSON.servers[cfg].startCB}${interaction.guild.id}${configJSON.servers[cfg].endCB}.json`)){
-						console.log('No database file found');
-						const noDatabaseEmbed = new MessageEmbed()
-							.setColor('#E3443B')
-							.setDescription(`No database has been made for this server, try hitting the boss!`);
-						interaction.editReply({embeds:[noDatabaseEmbed]});
-						return;
-					}
-					else{
-						let dataRead = fs.readFileSync(`./databases/${configJSON.servers[cfg].startCB}${interaction.guild.id}${configJSON.servers[cfg].endCB}.json`);
-						let dataJSON = JSON.parse(dataRead);
-						
-						for(let i=0;i<dataJSON.users.length;i++){
-							if(dataJSON.users[i].id == selectedUser){
-								dataJSON.users[i].hits = newHits;
-								let dataSave = JSON.stringify(dataJSON);
-								fs.writeFileSync(`./databases/${configJSON.servers[cfg].startCB}${interaction.guild.id}${configJSON.servers[cfg].endCB}.json`,dataSave);
-								let userNick = await interaction.guild.members.fetch(dataJSON.users[i].id).then(user => {return user.displayName});
-								const removeEmbed = new MessageEmbed()
-									.setColor('#E3443B')
-									.setDescription(`${userNick} has had their hits set to ${newHits}!`);
-								interaction.editReply({embeds:[removeEmbed]});
-								return;
-							}
-						}
-						const noUserEmbed = new MessageEmbed()
-							.setColor('#E3443B')
-							.setDescription(`The user with ID ${selectedUser} does not exist in the database!`);
-						interaction.editReply({embeds:[noUserEmbed]});
-						return;
-					}
-				}
+			let userSearch = await users.findOne({where:{'user_id': selectedUser, 'server_id':interaction.guild.id}});
+			if(userSearch){
+				userSearch.hits = newHits;
+				userSearch.save();
+				let userNick = await interaction.guild.members.fetch(selectedUser).then(user => {return user.displayName});
+				const removeEmbed = new EmbedBuilder()
+					.setColor('#E3443B')
+					.setDescription(`${userNick} has had their hits set to ${newHits}!`);
+				interaction.editReply({embeds:[removeEmbed]});
+				return;
+			}
+			else{
+				const noUserEmbed = new EmbedBuilder()
+					.setColor('#E3443B')
+					.setDescription(`The user with ID ${selectedUser} does not exist in the database!`);
+				interaction.editReply({embeds:[noUserEmbed]});
 			}
 		}
 	}
