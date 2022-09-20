@@ -54,7 +54,7 @@ module.exports = {
 			
 		const setStartEmbed = new EmbedBuilder()
 			.setColor('#E3443B')
-			.setDescription(`WARNING!!! THIS OPERATION WILL DELETE:\n${cbResults} ROWS FROM CBCONFIG\n${todayResults} ROWS FROM TODAYSHITS\n${timeResults} ROWS FROM TIMES\n${userResults.length} HITS WILL BE WIPED FOR TODAY\nARE YOU SURE YOU WANT TO CONTINUE?`);
+			.setDescription(`WARNING!!! THIS OPERATION WILL DELETE:\n${cbResults} ROWS FROM CBCONFIG\n${todayResults} ROWS FROM TODAYSHITS\n${timeResults} ROWS FROM TIMES\n${userResults.length} USERS HITS WILL BE WIPED FOR TODAY (EVEN IF NOT SAME CB!)\nARE YOU SURE YOU WANT TO CONTINUE?`);
 		interaction.editReply({embeds:[setStartEmbed],components: [row]});
 		
 		const filter = i => (i.customId === 'deleteRows' || i.customId === 'backOut') && i.user.id === interaction.user.id;

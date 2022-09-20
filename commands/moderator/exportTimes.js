@@ -31,7 +31,9 @@ module.exports = {
 		let dataCSV = 'user_id,cb_num,hits,times\n';
 		
 		for(let i=0;i<gottenTimes.length;i++){
-			dataCSV += `${gottenTimes[i].user_id},${gottenTimes[i].cb},${gottenTimes[i].hits},${gottenTimes[i].times}\n`;
+			let parsedTime = new Date(gottenTimes[i].times);
+			let gotTime = '' + parsedTime.getUTCHours() + ':' + parsedTime.getUTCMinutes() + ':' + parsedTime.getUTCSeconds();
+			dataCSV += `${gottenTimes[i].user_id},${gottenTimes[i].cb},${gottenTimes[i].hits},${gotTime}\n`;
 		}
 		
 		fs.writeFileSync('./times.csv',dataCSV);
