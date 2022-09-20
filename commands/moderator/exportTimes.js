@@ -31,7 +31,7 @@ module.exports = {
 		let dataCSV = 'user_id,cb_num,hits,times\n';
 		
 		for(let i=0;i<gottenTimes.length;i++){
-			let parsedTime = new Date(gottenTimes[i].times);
+			let parsedTime = new Date(parseInt(gottenTimes[i].times));
 			let gotTime = '' + parsedTime.getUTCHours() + ':' + parsedTime.getUTCMinutes() + ':' + parsedTime.getUTCSeconds();
 			dataCSV += `${gottenTimes[i].user_id},${gottenTimes[i].cb},${gottenTimes[i].hits},${gotTime}\n`;
 		}
