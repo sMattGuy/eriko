@@ -18,7 +18,16 @@ module.exports = {
 		}
 		console.log(interaction.user.username + ' is exporting times');
 		
-		let gottenTimes = await times.findAll();
+		let gottenTimes = await times.findAll({where:{'server_id': interaction.guild.id}});
+		if(gottenTimes.length  == 0){
+			const contactEmbed = new EmbedBuilder()
+				.setColor('#E3443B')
+				.setTitle('Error')
+				.setDescription(`No data to export.`);
+		
+			await interaction.editReply({embeds:[contactEmbed]});
+			return;
+		}
 		let dataCSV = 'user_id,server_id,hits,times\n';
 		
 		for(let i=0;i<gottenTimes.length;i++){
