@@ -34,6 +34,7 @@ module.exports = {
 		let cbResults = await cb.count({where:{'server_id':interaction.guild.id,'cb_id': cbNumber}});
 		let todayResults = await todayshits.count({where:{'server_id':interaction.guild.id,'cb': cbNumber});
 		let timeResults = await times.count({where:{'server_id':interaction.guild.id,'cb': cbNumber});
+		let userResults = await users.getCreditedHits(interaction.guild.id);
 		
 		let total = cbResults + todayResults + timeResults;
 		const acceptButton = new ButtonBuilder()
