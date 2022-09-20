@@ -1,41 +1,37 @@
-const fs = require('fs');
-const { MessageEmbed, Formatters } = require('discord.js');
+const { EmbedBuilder, codeBlock, SlashCommandBuilder } = require('discord.js');
+const { users, cb, todayshits } = require('../../dbObjects.js');
 
 module.exports = {
-	name: 'showhistory',
-	description: 'shows everyones hits for a specific clan battle',
+	data: new SlashCommandBuilder()
+		.setName('showhistory')
+		.setDescription('Shows the history of CBs'),
 	async execute(interaction){
 		console.log(interaction.user.username + ' is checking CB history');
 		await interaction.deferReply();
-		let configRead = fs.readFileSync(`./config.json`);
-		let configJSON = JSON.parse(configRead);
 		//check that the database exists
-		const databases = fs.readdirSync(`./databases/`).filter(file => file.includes(interaction.guild.id));
-		let clanbattleData = 'nothing';
-		let messageToSend = '';
-		for(const file of databases){
-			clanbattleData = 'gotten';
-			let tempdata = fs.readFileSync(`./databases/${file}`);
-			let tempJSON = JSON.parse(tempdata);
-			
-			let CBNum = tempJSON.num;
-			let startDate = file.substring(0,8);
-			let endDate = file.substring(file.length-13,file.length-5);
-			
-			messageToSend += `Clan Battle: ${CBNum}, Started: ${startDate}, Ended: ${endDate}\n`;
-		}
-		if(clanbattleData == 'nothing'){
+		let cbHistory = await cb.findAll({where:{'server_id': interaction.guild.id}, order:[['cb_id', 'DESC']]});
+		if(!cbHistory){
 			console.log('No database file found');
-			const noDatabaseEmbed = new MessageEmbed()
+			const noDatabaseEmbed = new EmbedBuilder()
 				.setColor('#E3443B')
-				.setDescription(`No hits have been recorded`);
+				.setDescription(`No data have been recorded!`);
 			interaction.editReply({embeds:[noDatabaseEmbed]});
 			return;
 		}
-		else{
-			messageToSend = Formatters.codeBlock(messageToSend);
-			await interaction.editReply(messageToSend);
-			return;
+		
+		let messageToSend = '';
+		interaction.editReply('Clan Battle History');
+		for(let i=0;i<cbHistory.length;i++){
+			let messageAddition = `Clan Battle: ${cbHistory[i].cb_id}, Started: ${cbHistory[i].start_date}, Ended: ${cbHistory[i].end_date}\n`;
+			if(messageToSend.length + messageAddition.length >= 2000){
+				let midMessage = codeBlock(messageToSend);
+				await interaction.followUp(messageToSend);
+				messageToSend = '';
+			}
+			messageToSend += messageAddition;
 		}
+		messageToSend = codeBlock(messageToSend);
+		await interaction.followUp(messageToSend);
+		return;
 	}
 };
