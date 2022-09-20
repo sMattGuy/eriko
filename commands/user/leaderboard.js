@@ -5,13 +5,14 @@ module.exports = {
 	name: 'leaderboard',
 	description: 'shows everyones hits for the entire clan battle',
 	async execute(interaction){
+		await interaction.reply('Working on it...');
 		console.log(interaction.user.username + ' is checking CB leaderboard');
 		if(!fs.existsSync(`./config.json`)){
 			console.log('No config file found');
 			const noConfigEmbed = new MessageEmbed()
 				.setColor('#E3443B')
 				.setDescription(`The next CB has not been set up!`);
-			interaction.reply({embeds:[noConfigEmbed]});
+			interaction.editReply({embeds:[noConfigEmbed]});
 			return;
 		}
 		let configRead = fs.readFileSync(`./config.json`);
@@ -25,11 +26,10 @@ module.exports = {
 					const noDatabaseEmbed = new MessageEmbed()
 						.setColor('#E3443B')
 						.setDescription(`No hits have been recorded`);
-					interaction.reply({embeds:[noDatabaseEmbed]});
+					interaction.editReply({embeds:[noDatabaseEmbed]});
 					return;
 				}
 				else{
-					await interaction.deferReply();
 					//read the database
 					let dataRead = fs.readFileSync(`./databases/${configJSON.servers[cfg].startCB}${interaction.guild.id}${configJSON.servers[cfg].endCB}.json`);
 					let dataJSON = JSON.parse(dataRead);
@@ -65,6 +65,6 @@ module.exports = {
 		const noConfigEmbed = new MessageEmbed()
 			.setColor('#E3443B')
 			.setDescription(`Configuration for this server has not been set up!`);
-		interaction.reply({embeds:[noConfigEmbed]});
+		interaction.editReply({embeds:[noConfigEmbed]});
 	}
 };
