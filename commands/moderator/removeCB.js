@@ -32,8 +32,8 @@ module.exports = {
 		console.log(interaction.user.username + ' is removing  the CB ' + cbNumber);
 		
 		let cbResults = await cb.count({where:{'server_id':interaction.guild.id,'cb_id': cbNumber}});
-		let todayResults = await todayshits.count({where:{'server_id':interaction.guild.id,'cb': cbNumber});
-		let timeResults = await times.count({where:{'server_id':interaction.guild.id,'cb': cbNumber});
+		let todayResults = await todayshits.count({where:{'server_id':interaction.guild.id,'cb': cbNumber}});
+		let timeResults = await times.count({where:{'server_id':interaction.guild.id,'cb': cbNumber}});
 		
 		let total = cbResults + todayResults + timeResults;
 		const acceptButton = new ButtonBuilder()
@@ -53,27 +53,27 @@ module.exports = {
 			
 		const setStartEmbed = new EmbedBuilder()
 			.setColor('#E3443B')
-			.setDescription(`WARNING!!! THIS OPERATION WILL DELETE:\n${cbResults} ROWS FROM CBCONFIG\n${todayResults} ROWS FROM TODAYSHITS\n${timeResults} ROWS FROM TIMES\nAARE YOU SURE YOU WANT TO CONTINUE?`);
+			.setDescription(`WARNING!!! THIS OPERATION WILL DELETE:\n${cbResults} ROWS FROM CBCONFIG\n${todayResults} ROWS FROM TODAYSHITS\n${timeResults} ROWS FROM TIMES\nARE YOU SURE YOU WANT TO CONTINUE?`);
 		interaction.editReply({embeds:[setStartEmbed],components: [row]});
 		
 		const filter = i => (i.customId === 'deleteRows' || i.customId === 'backOut') && i.user.id === interaction.user.id;
 
-		const collector = interaction.channel.createMessageComponentCollector({ filter, time: 15000 });
+		const collector = interaction.channel.createMessageComponentCollector({ filter, time: 60000 });
 		
 		collector.once('collect', async i => {
 			if(i.customId == 'deleteRows'){
 				await cb.destroy({where:{'server_id':interaction.guild.id,'cb_id': cbNumber}});
-				await todayshits.destroy({where:{'server_id':interaction.guild.id,'cb': cbNumber});
-				await times.destroy({where:{'server_id':interaction.guild.id,'cb': cbNumber});
-				await i.update({ content: `${total} Data has been removed`, components: [] });
+				await todayshits.destroy({where:{'server_id':interaction.guild.id,'cb': cbNumber}});
+				await times.destroy({where:{'server_id':interaction.guild.id,'cb': cbNumber}});
+				await i.update({ content: `${total} Data has been removed`, components: [], embeds: [] });
 			}
 			else{
-				await i.update({ content: 'No data has been removed', components: [] });
+				await i.update({ content: 'No data has been removed', components: [], embeds: [] });
 			}
 		});
 		collector.on('end', collected => {
 			if(collected.size == 0){
-				interaction.editReply({content:'No data has been removed', components: []});
+				interaction.editReply({content:'No data has been removed', components: [], embeds: []});
 			}
 		});
 	}

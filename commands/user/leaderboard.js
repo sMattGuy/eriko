@@ -6,7 +6,6 @@ module.exports = {
 		.setName('leaderboard')
 		.setDescription('Shows everyones hits for the entire Clan Battle'),
 	async execute(interaction){
-		await interaction.reply('Working on it...');
 		console.log(interaction.user.username + ' is checking CB leaderboard');
 		await interaction.deferReply();
 		//grab config

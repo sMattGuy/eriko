@@ -82,6 +82,7 @@ client.on('interactionCreate', async interaction => {
 let dailyActivity = new cron.CronJob('0 13 * * *', async () => {
 	//triggers at 9AM EST or 13 UTC
 	let currentTime = new Date();
+	console.log('running the daily at ' + currentTime)
 	currentTime.setDate(currentTime.getDate() - 1);
 	//setting yesterdays hits
 	//loop that iterates over all users and resets their daily hits to 0
