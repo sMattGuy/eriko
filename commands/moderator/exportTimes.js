@@ -28,10 +28,10 @@ module.exports = {
 			await interaction.editReply({embeds:[contactEmbed]});
 			return;
 		}
-		let dataCSV = 'user_id,server_id,hits,times\n';
+		let dataCSV = 'user_id,cb_num,hits,times\n';
 		
 		for(let i=0;i<gottenTimes.length;i++){
-			dataCSV += `${gottenTimes[i].user_id},${gottenTimes[i].server_id},${gottenTimes[i].hits},${gottenTimes[i].times}\n`;
+			dataCSV += `${gottenTimes[i].user_id},${gottenTimes[i].cb},${gottenTimes[i].hits},${gottenTimes[i].times}\n`;
 		}
 		
 		fs.writeFileSync('./times.csv',dataCSV);

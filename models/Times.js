@@ -9,6 +9,9 @@ module.exports = (sequelize, DataTypes) => {
 		hits: {
 			type: DataTypes.INTEGER,
 		},
+		cb: {
+			type: DataTypes.INTEGER,
+		},
 		times: {
 			type: DataTypes.STRING,
 		},

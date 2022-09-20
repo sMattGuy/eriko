@@ -84,7 +84,7 @@ module.exports = {
 			await users.create({'user_id': hitUser, 'server_id': interaction.guild.id, 'hits': hitAmount});
 		}
 		let stringDate = '' + Date.now();
-		await times.create({'user_id': hitUser, 'server_id': interaction.guild.id, 'hits': hitAmount, 'times': stringDate});
+		await times.create({'user_id': hitUser, 'server_id': interaction.guild.id, 'hits': hitAmount, 'times': stringDate, 'cb': cbConfig.recentCB});
 		//alerts user
 		const hitsEmbed = new EmbedBuilder()
 			.setColor('#E3443B')
