@@ -9,6 +9,7 @@ const sequelize = new Sequelize({
 const users = require('./models/Users.js')(sequelize, Sequelize.DataTypes);
 const cb = require('./models/Cb.js')(sequelize, Sequelize.DataTypes);
 const todayshits = require('./models/TodaysHits.js')(sequelize, Sequelize.DataTypes);
+const times = require('./models/Times.js')(sequelize, Sequelize.DataTypes);
 
 Reflect.defineProperty(todayshits, 'getAllHits', {
 	value: async (cbnum, serverid) => {
@@ -33,4 +34,4 @@ Reflect.defineProperty(users, 'getCreditedHits', {
 		return usersFound;
 	},
 });
-module.exports = { users, cb, todayshits};
+module.exports = { users, cb, todayshits, times };

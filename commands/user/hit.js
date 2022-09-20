@@ -1,5 +1,5 @@
 const { EmbedBuilder, SlashCommandBuilder } = require('discord.js');
-const { users, cb, todayshits } = require('../../dbObjects.js');
+const { users, cb, todayshits, times } = require('../../dbObjects.js');
 
 const MAXHITS = 3;
 
@@ -83,7 +83,8 @@ module.exports = {
 			//new entry
 			await users.create({'user_id': hitUser, 'server_id': interaction.guild.id, 'hits': hitAmount});
 		}
-
+		let stringDate = '' + Date.now();
+		await times.create({'user_id': hitUser, 'server_id': interaction.guild.id, 'hits': hitAmount, 'times': stringDate});
 		//alerts user
 		const hitsEmbed = new EmbedBuilder()
 			.setColor('#E3443B')
