@@ -32,7 +32,10 @@ module.exports = {
 		
 		for(let i=0;i<gottenTimes.length;i++){
 			let parsedTime = new Date(parseInt(gottenTimes[i].times));
-			let gotTime = '' + parsedTime.getUTCHours() + ':' + parsedTime.getUTCMinutes() + ':' + parsedTime.getUTCSeconds();
+			let parsedHours = ('0' + parsedTime.getUTCHours()).slice(-2);
+			let parsedMins = ('0' + parsedTime.getUTCMinutes()).slice(-2);
+			let parsedSecs = ('0' + parsedTime.getUTCSeconds()).slice(-2);
+			let gotTime = '' + parsedHours + ':' + parsedMins + ':' + parsedSecs;
 			dataCSV += `${gottenTimes[i].user_id},${gottenTimes[i].cb},${gottenTimes[i].hits},${gotTime}\n`;
 		}
 		
