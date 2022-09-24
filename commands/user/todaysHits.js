@@ -44,7 +44,7 @@ module.exports = {
 			userArray.push(userObject);
 		}
 		userArray.sort(function(a,b){
-			return parseInt(b.hits) - parseInt(a.hits);
+			return a.name.localeCompare(b.name);
 		});
 		let messageToSend = `Today's hits\n`;
 		for(let i=0;i<userArray.length;i++){

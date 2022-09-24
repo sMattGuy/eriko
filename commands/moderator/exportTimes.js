@@ -28,15 +28,21 @@ module.exports = {
 			await interaction.editReply({embeds:[contactEmbed]});
 			return;
 		}
-		let dataCSV = 'user_id,cb_num,hits,times\n';
+		let dataCSV = 'user_id,cb_num,hits,times,date\n';
 		
 		for(let i=0;i<gottenTimes.length;i++){
+			//time information
 			let parsedTime = new Date(parseInt(gottenTimes[i].times));
 			let parsedHours = ('0' + parsedTime.getUTCHours()).slice(-2);
 			let parsedMins = ('0' + parsedTime.getUTCMinutes()).slice(-2);
 			let parsedSecs = ('0' + parsedTime.getUTCSeconds()).slice(-2);
 			let gotTime = '' + parsedHours + ':' + parsedMins + ':' + parsedSecs;
-			dataCSV += `${gottenTimes[i].user_id},${gottenTimes[i].cb},${gottenTimes[i].hits},${gotTime}\n`;
+			//date information
+			let parsedMonth = parsedTime.getUTCMonth() + 1;
+			let parsedDay = parsedTime.getUTCDate();
+			let parsedYear = parsedTime.getUTCFullYear();
+			let gotDate = '' + parsedMonth + '/' + parsedDay + '/' + parsedYear;
+			dataCSV += `${gottenTimes[i].user_id},${gottenTimes[i].cb},${gottenTimes[i].hits},${gotTime},${gotDate}\n`;
 		}
 		
 		fs.writeFileSync('./times.csv',dataCSV);
