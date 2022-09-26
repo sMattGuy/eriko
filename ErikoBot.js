@@ -42,7 +42,33 @@ client.on('messageCreate', async message => {
 	//haha funny
 	if(messageMap.has(message.channel.id) && !message.author.bot){
 		let messUpdate = messageMap.get(message.channel.id);
-		if(messUpdate.content == message.content && messUpdate.author != message.author.id && messUpdate.sticker.first().id == message.stickers.first().id){
+		let storedSticker = messUpdate.sticker.size;
+		let newSticker = message.stickers.size;
+		if(newSticker == 1){
+			//message has sticker
+			if(storedSticker == 1){
+				//prev message had  a sticker too
+				if(messUpdate.sticker.first().id == message.stickers.first().id){
+					updateMessages();
+				}
+				else{
+					let newInput = {content:message.content,times:1,author:message.author.id,sticker:message.stickers};
+					messageMap.set(message.channel.id,newInput);
+				}
+			}
+			else{
+				let newInput = {content:message.content,times:1,author:message.author.id,sticker:message.stickers};
+				messageMap.set(message.channel.id,newInput);
+			}
+		}
+		else if(messUpdate.content == message.content && messUpdate.author != message.author.id){
+			updateMessages();
+		}
+		else{
+			let newInput = {content:message.content,times:1,author:message.author.id,sticker:message.stickers};
+			messageMap.set(message.channel.id,newInput);
+		}
+		function updateMessages(){
 			messUpdate.times += 1;
 			messUpdate.author = message.author.id;
 			messageMap.set(message.channel.id,messUpdate);
@@ -50,15 +76,11 @@ client.on('messageCreate', async message => {
 				if(messUpdate.content.length != 0){
 					message.channel.send(messUpdate.content);
 				}
-				else{
+				else if(message.stickers.size == 1){
 					message.channel.send({stickers:messUpdate.sticker}).catch(() => {console.log('could not send sticker')});
 				}
 				messageMap.delete(message.channel.id);
 			}
-		}
-		else{
-			let newInput = {content:message.content,times:1,author:message.author.id,sticker:message.stickers};
-			messageMap.set(message.channel.id,newInput);
 		}
 	}
 	else{

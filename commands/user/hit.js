@@ -54,7 +54,7 @@ module.exports = {
 		let currentTime = new Date();
 		let timeDiff = startCB.getTime() - Date.now();
 		let dayDiff = Math.floor(timeDiff / (1000 * 3600 * 24));
-		
+		dayDiff += 1;
 		if(timeDiff >= 0){
 			const invalidStartEmbed = new EmbedBuilder()
 				.setColor('#E3443B')
