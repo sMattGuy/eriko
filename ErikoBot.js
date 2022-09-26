@@ -48,7 +48,7 @@ client.on('messageCreate', async message => {
 			//message has sticker
 			if(storedSticker == 1){
 				//prev message had  a sticker too
-				if(messUpdate.sticker.first().id == message.stickers.first().id){
+				if(messUpdate.sticker.first().id == message.stickers.first().id && message.author.id != messUpdate.author){
 					updateMessages();
 				}
 				else{
