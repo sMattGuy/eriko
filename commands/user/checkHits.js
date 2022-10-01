@@ -54,8 +54,10 @@ module.exports = {
 			endCB.setUTCSeconds(0);
 			endCB.setUTCMilliseconds(0);
 
-			let lookDate = new Date();
+			let lookDate = startCB;
 			lookDate.setUTCDate(startCB.getUTCDate() + parseInt(selectedDate) - 1);
+			console.log(`lookdate ${lookDate}`);
+			console.log(`enddate ${endCB}`);
 			if(lookDate > endCB){
 				console.log('Invalid day');
 				const noConfigEmbed = new EmbedBuilder()

@@ -34,7 +34,7 @@ module.exports = {
 		for(let i=0;i<userData.length;i++){
 			let usersHits = userData[i].n_hits;
 			totalHits += usersHits;
-			let userNick = await interaction.guild.members.fetch(userData[i].user_id).then(user => {return user.displayName}).catch(e => {return 'NoNameError'});
+			let userNick = await interaction.guild.members.fetch(userData[i].user_id).then(user => {return user.displayName}).catch(e => {return userData[i].user_id});
 			let userObject = {name:userNick,hits:usersHits};
 			userArray.push(userObject);
 		}

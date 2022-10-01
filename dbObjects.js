@@ -13,7 +13,7 @@ const times = require('./models/Times.js')(sequelize, Sequelize.DataTypes);
 
 Reflect.defineProperty(todayshits, 'getAllHits', {
 	value: async (cbnum, serverid) => {
-		let hitsFound = await todayshits.findAll({attributes: ['user_id', 'server_id', 'date', 'cb', [sequelize.fn('COUNT', sequelize.col('hits')), 'n_hits']], where:{'cb': cbnum, 'server_id': serverid},raw:true,group: ['user_id'],});
+		let hitsFound = await todayshits.findAll({attributes: ['user_id', 'server_id', 'cb', [sequelize.fn('SUM', sequelize.col('hits')), 'n_hits']], where:{'cb': cbnum, 'server_id': serverid},raw:true,group: ['user_id'],});
 		if(hitsFound.length == 0){
 			return [];
 		}
